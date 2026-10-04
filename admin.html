@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Admin | BrillaClean</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+
+    <div id="loginModalContainer" class="login-overlay">
+        <div class="login-card">
+            <h2><i class="fa-solid fa-lock"></i> Acceso Restringido</h2>
+            <p>Ingresa tus credenciales administrativas para continuar.</p>
+            <form id="loginForm">
+                <div class="form-group" style="margin-bottom: 15px; text-align: left;">
+                    <label for="usuarioAdmin">Usuario:</label>
+                    <input type="text" id="usuarioAdmin" required placeholder="Usuario">
+                </div>
+                <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                    <label for="passwordAdmin">Contraseña:</label>
+                    <input type="password" id="passwordAdmin" required placeholder="Contraseña">
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Iniciar Sesión</button>
+                <div style="margin-top: 15px; text-align: center;">
+                    <a href="index.html" style="color: #94a3b8; font-size: 0.85rem; text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Volver a la página principal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="panelAdminContent" class="hidden">
+        <header class="main-header admin-header-bg">
+            <div class="container nav-container">
+                <h1><i class="fa-solid fa-gauge-high"></i> Panel de Administración</h1>
+                <div>
+                    <a href="index.html" class="nav-link" style="margin-right: 15px;"><i class="fa-solid fa-house"></i> Ver Web</a>
+                    <button id="btnCerrarSesion" class="btn-sm btn-danger"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="container admin-container" style="padding-top: 30px;">
+            <section class="admin-card alert-simulator">
+                <h3><i class="fa-solid fa-mobile-screen-button"></i> Centro de Notificaciones Móviles (Simulador Local)</h3>
+                <p>Alertas automáticas de nuevas reservas y cambios de estado.</p>
+                <div id="listaNotificaciones" class="notifications-box">
+                    <p class="placeholder-text">No hay notificaciones nuevas en este momento.</p>
+                </div>
+            </section>
+
+            <section class="admin-card">
+                <h3><i class="fa-solid fa-calendar-xmark"></i> Bloquear Fecha en el Calendario</h3>
+                <form id="bloqueoForm" class="inline-form">
+                    <div class="form-group">
+                        <label for="fechaBloqueo">Fecha a Bloquear:</label>
+                        <input type="date" id="fechaBloqueo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="motivoBloqueo">Motivo:</label>
+                        <input type="text" id="motivoBloqueo" placeholder="Ej. Feriado / Ocupado" required>
+                    </div>
+                    <button type="submit" class="btn-warning"><i class="fa-solid fa-ban"></i> Bloquear Fecha</button>
+                </form>
+            </section>
+
+            <section class="admin-card">
+                <h3><i class="fa-solid fa-list-check"></i> Listado de Órdenes y Solicitudes</h3>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>N° Orden</th>
+                                <th>Cliente</th>
+                                <th>Servicio</th>
+                                <th>Fecha / Hora</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaOrdenesAdmin"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

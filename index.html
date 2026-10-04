@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrillaClean | Servicios de Limpieza Profesional</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container nav-container">
+            <h1 class="logo"><i class="fa-solid fa-broom"></i> BrillaClean</h1>
+            <nav class="nav-menu">
+                <a href="#reservas" class="nav-link">Reservar Cita</a>
+                <a href="#consultar" class="nav-link">Consultar Orden</a>
+                <a href="admin.html" class="nav-link admin-link-secret" title="Acceso Administrativo"><i class="fa-solid fa-lock"></i></a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero-cover">
+        <div class="hero-overlay">
+            <div class="container hero-content">
+                <h2>Excelencia y Pulcritud en Cada Espacio</h2>
+                <p>Servicios de limpieza residencial, comercial y post-obra con estándares profesionales. Agenda de forma rápida, segura y transparente.</p>
+                <a href="#reservas" class="btn-hero">Agendar Mi Servicio Ahora</a>
+            </div>
+        </div>
+    </section>
+
+    <main class="container main-content-wrapper">
+        <section id="reservas" class="card-section">
+            <h3><i class="fa-regular fa-calendar-days"></i> Agenda tu Servicio Online</h3>
+            <p class="section-subtitle">Selecciona los detalles de tu requerimiento. Las fechas ocupadas se bloquearán automáticamente.</p>
+            
+            <form id="reservaForm" class="grid-form">
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo:</label>
+                    <input type="text" id="nombre" required placeholder="Ej. Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono / Celular:</label>
+                    <input type="tel" id="telefono" required placeholder="+56 9 ...">
+                </div>
+                <div class="form-group">
+                    <label for="direccion">Dirección del Servicio:</label>
+                    <input type="text" id="direccion" required placeholder="Calle, Número, Ciudad">
+                </div>
+                <div class="form-group">
+                    <label for="tipoServicio">Tipo de Limpieza:</label>
+                    <select id="tipoServicio" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="Limpieza Residencial Básica">Limpieza Residencial Básica</option>
+                        <option value="Limpieza Profunda / Post-Obra">Limpieza Profunda / Post-Obra</option>
+                        <option value="Limpieza de Oficinas">Limpieza de Oficinas</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fechaReserva">Fecha:</label>
+                    <input type="date" id="fechaReserva" required>
+                </div>
+                <div class="form-group">
+                    <label for="horaReserva">Hora:</label>
+                    <select id="horaReserva" required>
+                        <option value="">Selecciona horario</option>
+                        <option value="09:00 AM">09:00 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="03:00 PM">03:00 PM</option>
+                    </select>
+                </div>
+                <div class="form-full">
+                    <button type="submit" class="btn-primary"><i class="fa-solid fa-check-circle"></i> Confirmar y Obtener N° de Orden</button>
+                </div>
+            </form>
+            
+            <div id="resultadoReserva" class="alert-box hidden">
+                <h4>¡Reserva Solicitada con Éxito!</h4>
+                <p>Tu Número de Orden es: <strong id="numeroOrdenGenerado" class="badge-code"></strong></p>
+                <p class="small-text">Guarda este número para consultar el estado de tu servicio. Notificación local simulada enviada.</p>
+            </div>
+        </section>
+
+        <section id="consultar" class="card-section">
+            <h3><i class="fa-solid fa-magnifying-glass"></i> Consultar Estado de Orden</h3>
+            <p class="section-subtitle">Introduce tu código asignado para verificar el estado de tu servicio.</p>
+            <div class="search-box">
+                <input type="text" id="inputBuscarOrden" placeholder="Ej. ORD-172849">
+                <button id="btnBuscarOrden" class="btn-secondary">Consultar</button>
+            </div>
+            <div id="detalleOrden" class="order-details hidden"></div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2026 BrillaClean - Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
