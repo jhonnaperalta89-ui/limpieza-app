@@ -5,14 +5,14 @@ import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from 
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
 
 // Configuración oficial de tu proyecto con la API Key corregida
-const firebaseConfig = {
-    apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
-    authDomain: "brillaclean-b9226.firebaseapp.com",
-    projectId: "brillaclean-b9226",
-    storageBucket: "brillaclean-b9226.firebasestorage.app",
-    messagingSenderId: "509006775314",
-    appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb",
-    measurementId: "G-LCWWKB1Q7B"
+const firebaseConfig = { 
+  apiKey : "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw" , 
+  authDomain : "brillaclean-b9226.firebaseapp.com" , 
+  projectId : "brillaclean-b9226" , 
+  storageBucket : "brillaclean-b9226.firebasestorage.app" , 
+  messagingSenderId : "509006775314" , 
+  appId : "1:509006775314:web:1b92b6d31d110b5b4c84cb" , 
+  measurementId : "G-LCWWKB1Q7B" 
 };
 
 // Inicializar Firebase y los servicios
