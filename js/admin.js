@@ -1,5 +1,5 @@
 ﻿const firebaseConfig = {
-    apiKey: "AIzaSyBUPG9N4UPorLaOiTYLbZ2UB6T5mUbxkLw",
+    apiKey: "AIzaSyBUPG9N4UPorLaOiTYLbZ2UB6T5mUbxLw",
     authDomain: "brillaclean-b9226.firebaseapp.com",
     projectId: "brillaclean-b9226",
     storageBucket: "brillaclean-b9226.firebasestorage.app",
@@ -15,6 +15,7 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 document.addEventListener("DOMContentLoaded", () => {
+    // El servidor de Firebase verifica si hay una sesión real activa
     auth.onAuthStateChanged((user) => {
         if (user) {
             mostrarPanelAdmin();
@@ -28,16 +29,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.getElementById("loginForm");
     if (loginForm) {
         loginForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Evita que la página se recargue sola
+            
             const emailInput = document.getElementById("usuarioAdmin").value.trim();
             const passwordInput = document.getElementById("passwordAdmin").value.trim();
 
+            console.log("Intentando iniciar sesión con:", emailInput); // Para depurar en consola
+
             try {
-                await auth.signInWithEmailAndPassword(emailInput, passwordInput);
-                loginForm.reset();
+                const userCredential = await auth.signInWithEmailAndPassword(emailInput, passwordInput);
+                console.log("¡Éxito!", userCredential.user);
             } catch (error) {
                 console.error("Código de error Firebase:", error.code);
-                alert("Error: " + error.message);
+                console.error("Mensaje completo:", error.message);
+                alert("Error de acceso: " + error.message);
             }
         });
     }
