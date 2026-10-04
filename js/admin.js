@@ -38,7 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 await auth.signInWithEmailAndPassword(emailInput, passwordInput);
                 loginForm.reset();
             } catch (error) {
-                alert("Credenciales incorrectas o acceso no autorizado.");
+                console.error("Código de error Firebase:", error.code);
+                console.error("Mensaje completo:", error.message);
+                alert("Error: " + error.message);
             }
         });
     }
