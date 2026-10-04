@@ -1,11 +1,11 @@
-﻿// Importar los SDKs modulares oficiales (versión 12)
+﻿// Importar los SDKs modulares oficiales con sus rutas completas para la web
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
+    apiKey: "AIzaSyBUPG9N4UPorLaOiTYLbZ2UB6T5mUbxkLw",
     authDomain: "brillaclean-b9226.firebaseapp.com",
     projectId: "brillaclean-b9226",
     storageBucket: "brillaclean-b9226.firebasestorage.app",
