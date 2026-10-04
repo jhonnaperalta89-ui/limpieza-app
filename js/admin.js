@@ -1,29 +1,23 @@
-﻿// Importar los SDKs modulares oficiales con sus rutas CDN completas para la web
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-// Configuración exacta obtenida de tu panel de Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
-  authDomain: "brillaclean-b9226.firebaseapp.com",
-  projectId: "brillaclean-b9226",
-  storageBucket: "brillaclean-b9226.firebasestorage.app",
-  messagingSenderId: "509006775314",
-  appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb",
-  measurementId: "G-LCWWKB1Q7B"
+﻿const firebaseConfig = {
+    apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
+    authDomain: "brillaclean-b9226.firebaseapp.com",
+    projectId: "brillaclean-b9226",
+    storageBucket: "brillaclean-b9226.firebasestorage.app",
+    messagingSenderId: "509006775314",
+    appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb",
+    measurementId: "G-LCWWKB1Q7B"
 };
 
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
-const db = getFirestore(app);
+// Inicializar Firebase de forma segura con el SDK global
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+const auth = firebase.auth();
 
 document.addEventListener("DOMContentLoaded", () => {
     // Control de sesión activa
-    onAuthStateChanged(auth, (user) => {
+    auth.onAuthStateChanged((user) => {
         if (user) {
             mostrarPanelAdmin();
             escucharOrdenesAdmin();
@@ -41,15 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const emailInput = document.getElementById("usuarioAdmin").value.trim();
             const passwordInput = document.getElementById("passwordAdmin").value.trim();
 
-            console.log("Intentando iniciar sesión con:", emailInput);
-
             try {
-                await signInWithEmailAndPassword(auth, emailInput, passwordInput);
-                console.log("¡Inicio de sesión exitoso!");
+                await auth.signInWithEmailAndPassword(emailInput, passwordInput);
                 loginForm.reset();
             } catch (error) {
-                console.error("Código de error Firebase:", error.code);
-                console.error("Mensaje completo:", error.message);
+                console.error("Error de autenticación:", error.message);
                 alert("Error de acceso: " + error.message);
             }
         });
@@ -58,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnCerrarSesion = document.getElementById("btnCerrarSesion");
     if (btnCerrarSesion) {
         btnCerrarSesion.addEventListener("click", async () => {
-            await signOut(auth);
+            await auth.signOut();
             location.reload();
         });
     }
@@ -78,25 +68,25 @@ function escucharOrdenesAdmin() {
     const tabla = document.getElementById("tablaOrdenesAdmin");
     if (!tabla) return;
 
-    onSnapshot(collection(db, "ordenes"), (snapshot) => {
+    db.collection("ordenes").onSnapshot((snapshot) => {
         if (snapshot.empty) {
             tabla.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay órdenes registradas aún.</td></tr>`;
             return;
         }
 
         tabla.innerHTML = "";
-        snapshot.forEach((documento) => {
-            let orden = documento.data();
+        snapshot.forEach((doc) => {
+            let orden = doc.data();
             let fila = document.createElement("tr");
             fila.innerHTML = `
-                <td><strong>${orden.id}</strong></td>
-                <td>${orden.nombre}<br><small>${orden.telefono}</small></td>
-                <td>${orden.tipoServicio}</td>
-                <td>${orden.fecha}<br><small>${orden.hora}</small></td>
-                <td><span class="badge-status status-${orden.estado.toLowerCase()}">${orden.estado}</span></td>
+                <td><strong>${orden.id || doc.id}</strong></td>
+                <td>${orden.nombre || 'N/A'}<br><small>${orden.telefono || ''}</small></td>
+                <td>${orden.tipoServicio || 'Limpieza'}</td>
+                <td>${orden.fecha || ''}<br><small>${orden.hora || ''}</small></td>
+                <td><span class="badge-status">${orden.estado || 'Pendiente'}</span></td>
                 <td>
-                    <button onclick="cambiarEstado('${orden.id}', 'Confirmado')" class="btn-sm btn-success">Aprobar</button>
-                    <button onclick="eliminarOrden('${orden.id}')" class="btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                    <button onclick="cambiarEstado('${doc.id}', 'Confirmado')" class="btn-sm btn-success">Aprobar</button>
+                    <button onclick="eliminarOrden('${doc.id}')" class="btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
                 </td>
             `;
             tabla.appendChild(fila);
@@ -106,16 +96,16 @@ function escucharOrdenesAdmin() {
 
 window.cambiarEstado = async function(id, nuevoEstado) {
     try {
-        await updateDoc(doc(db, "ordenes", id), { estado: nuevoEstado });
+        await db.collection("ordenes").doc(id).update({ estado: nuevoEstado });
     } catch (error) {
         alert("Operación denegada por reglas de seguridad.");
     }
 }
 
 window.eliminarOrden = async function(id) {
-    if (confirm(`¿Estás seguro de eliminar la orden ${id}?`)) {
+    if (confirm(`¿Estás seguro de eliminar la orden?`)) {
         try {
-            await deleteDoc(doc(db, "ordenes", id));
+            await db.collection("ordenes").doc(id).delete();
         } catch (error) {
             alert("Operación denegada por reglas de seguridad.");
         }
@@ -126,15 +116,15 @@ function escucharNotificaciones() {
     const listaNotificaciones = document.getElementById("listaNotificaciones");
     if (!listaNotificaciones) return;
 
-    onSnapshot(collection(db, "notificaciones"), (snapshot) => {
+    db.collection("notificaciones").onSnapshot((snapshot) => {
         if (snapshot.empty) {
             listaNotificaciones.innerHTML = `<p class="placeholder-text">No hay notificaciones nuevas.</p>`;
             return;
         }
 
         listaNotificaciones.innerHTML = "";
-        snapshot.forEach((documento) => {
-            let n = documento.data();
+        snapshot.forEach((doc) => {
+            let n = doc.data();
             let div = document.createElement("div");
             div.className = `notif-item`;
             div.innerHTML = `<i class="fa-solid fa-bell"></i> ${n.mensaje}`;
