@@ -1,21 +1,22 @@
-﻿// Importar los SDKs modulares de Firebase
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+﻿// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Configuración oficial de tu proyecto con la API Key corregida
-const firebaseConfig = { 
-  apiKey : "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw" , 
-  authDomain : "brillaclean-b9226.firebaseapp.com" , 
-  projectId : "brillaclean-b9226" , 
-  storageBucket : "brillaclean-b9226.firebasestorage.app" , 
-  messagingSenderId : "509006775314" , 
-  appId : "1:509006775314:web:1b92b6d31d110b5b4c84cb" , 
-  measurementId : "G-LCWWKB1Q7B" 
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
+  authDomain: "brillaclean-b9226.firebaseapp.com",
+  projectId: "brillaclean-b9226",
+  storageBucket: "brillaclean-b9226.firebasestorage.app",
+  messagingSenderId: "509006775314",
+  appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb",
+  measurementId: "G-LCWWKB1Q7B"
 };
 
-// Inicializar Firebase y los servicios
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
