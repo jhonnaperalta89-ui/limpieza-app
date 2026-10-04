@@ -1,4 +1,5 @@
-﻿const firebaseConfig = {
+﻿// Archivo limpio sin modulos - Version Final
+const firebaseConfig = {
     apiKey: "AIzaSyBUPG9N4UPorLaOiTYLbZ2UB6T5mUbxkLw",
     authDomain: "brillaclean-b9226.firebaseapp.com",
     projectId: "brillaclean-b9226",
