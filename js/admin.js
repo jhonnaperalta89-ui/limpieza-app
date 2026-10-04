@@ -30,8 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (loginForm) {
         loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-            const emailInput = document.getElementById("usuarioAdmin").value.trim();
-            const passwordInput = document.getElementById("passwordAdmin").value.trim();
+            
+            // Credenciales fijas configuradas directamente
+            const emailInput = "jhonnaperalta15@gmail.com";
+            const passwordInput = "Catalina1208";
 
             try {
                 // Autenticación real cifrada en el servidor de Firebase
