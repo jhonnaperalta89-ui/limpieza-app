@@ -1,138 +1,132 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
-    const sesionIniciada = sessionStorage.getItem("adminLogueado");
-    if (sesionIniciada === "true") {
-        mostrarPanelAdmin();
-    }
+﻿const firebaseConfig = {
+    apiKey: "AIzaSyBUPG9N4UPorLaOiTYLbZ2UB6T5mUbxLw",
+    authDomain: "brillaclean-b9226.firebaseapp.com",
+    projectId: "brillaclean-b9226",
+    storageBucket: "brillaclean-b9226.firebasestorage.app",
+    messagingSenderId: "509006775314",
+    appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb",
+    measurementId: "G-LCWWKB1Q7B"
+};
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+document.addEventListener("DOMContentLoaded", () => {
+    // El servidor de Firebase verifica si hay una sesión real activa
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            mostrarPanelAdmin();
+            escucharOrdenesAdmin();
+            escucharNotificaciones();
+        } else {
+            ocultarPanelAdmin();
+        }
+    });
 
     const loginForm = document.getElementById("loginForm");
     if (loginForm) {
-        loginForm.addEventListener("submit", (e) => {
+        loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-            const usuarioInput = document.getElementById("usuarioAdmin").value.trim();
+            const emailInput = document.getElementById("usuarioAdmin").value.trim();
             const passwordInput = document.getElementById("passwordAdmin").value.trim();
 
-            const usuarioCorrecto = "Maida@Bogado";
-            const passwordCorrecta = "Catalina1208";
-
-            if (usuarioInput === usuarioCorrecto && passwordInput === passwordCorrecta) {
-                sessionStorage.setItem("adminLogueado", "true");
-                mostrarPanelAdmin();
-            } else {
-                alert("Credenciales incorrectas. Verifique usuario y contraseña.");
+            try {
+                // Autenticación real cifrada en el servidor de Firebase
+                await auth.signInWithEmailAndPassword(emailInput, passwordInput);
+                loginForm.reset();
+            } catch (error) {
+                alert("Credenciales incorrectas o acceso no autorizado.");
             }
         });
     }
 
     const btnCerrarSesion = document.getElementById("btnCerrarSesion");
     if (btnCerrarSesion) {
-        btnCerrarSesion.addEventListener("click", () => {
-            sessionStorage.removeItem("adminLogueado");
+        btnCerrarSesion.addEventListener("click", async () => {
+            await auth.signOut();
             location.reload();
-        });
-    }
-
-    cargarOrdenesAdmin();
-    cargarNotificaciones();
-
-    const bloqueoForm = document.getElementById("bloqueoForm");
-    if (bloqueoForm) {
-        bloqueoForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const fecha = document.getElementById("fechaBloqueo").value;
-            const motivo = document.getElementById("motivoBloqueo").value;
-
-            let fechasBloqueadas = JSON.parse(localStorage.getItem("fechasBloqueadas")) || [];
-            if (!fechasBloqueadas.includes(fecha)) {
-                fechasBloqueadas.push(fecha);
-                localStorage.setItem("fechasBloqueadas", JSON.stringify(fechasBloqueadas));
-                alert(`Fecha ${fecha} bloqueada correctamente.`);
-                bloqueoForm.reset();
-            } else {
-                alert("Esta fecha ya está bloqueada.");
-            }
         });
     }
 });
 
 function mostrarPanelAdmin() {
-    const loginModal = document.getElementById("loginModalContainer");
-    const panelContent = document.getElementById("panelAdminContent");
-    if (loginModal) loginModal.classList.add("hidden");
-    if (panelContent) panelContent.classList.remove("hidden");
+    document.getElementById("loginModalContainer").classList.add("hidden");
+    document.getElementById("panelAdminContent").classList.remove("hidden");
 }
 
-function cargarOrdenesAdmin() {
+function ocultarPanelAdmin() {
+    document.getElementById("loginModalContainer").classList.remove("hidden");
+    document.getElementById("panelAdminContent").classList.add("hidden");
+}
+
+function escucharOrdenesAdmin() {
     const tabla = document.getElementById("tablaOrdenesAdmin");
     if (!tabla) return;
-    
-    let ordenes = JSON.parse(localStorage.getItem("ordenesLimpieza")) || [];
 
-    if (ordenes.length === 0) {
-        tabla.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay órdenes registradas aún.</td></tr>`;
-        return;
-    }
+    db.collection("ordenes").onSnapshot((snapshot) => {
+        if (snapshot.empty) {
+            tabla.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay órdenes registradas aún.</td></tr>`;
+            return;
+        }
 
-    tabla.innerHTML = "";
-    ordenes.forEach((orden) => {
-        let fila = document.createElement("tr");
-        fila.innerHTML = `
-            <td><strong>${orden.id}</strong></td>
-            <td>${orden.nombre}<br><small>${orden.telefono}</small></td>
-            <td>${orden.tipoServicio}</td>
-            <td>${orden.fecha}<br><small>${orden.hora}</small></td>
-            <td><span class="badge-status status-${orden.estado.toLowerCase()}">${orden.estado}</span></td>
-            <td>
-                <button onclick="cambiarEstado('${orden.id}', 'Confirmado')" class="btn-sm btn-success">Aprobar</button>
-                <button onclick="eliminarOrden('${orden.id}')" class="btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
-            </td>
-        `;
-        tabla.appendChild(fila);
+        tabla.innerHTML = "";
+        snapshot.forEach((doc) => {
+            let orden = doc.data();
+            let fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td><strong>${orden.id}</strong></td>
+                <td>${orden.nombre}<br><small>${orden.telefono}</small></td>
+                <td>${orden.tipoServicio}</td>
+                <td>${orden.fecha}<br><small>${orden.hora}</small></td>
+                <td><span class="badge-status status-${orden.estado.toLowerCase()}">${orden.estado}</span></td>
+                <td>
+                    <button onclick="cambiarEstado('${orden.id}', 'Confirmado')" class="btn-sm btn-success">Aprobar</button>
+                    <button onclick="eliminarOrden('${orden.id}')" class="btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            `;
+            tabla.appendChild(fila);
+        });
     });
 }
 
-window.cambiarEstado = function(id, nuevoEstado) {
-    let ordenes = JSON.parse(localStorage.getItem("ordenesLimpieza")) || [];
-    let orden = ordenes.find(o => o.id === id);
-    if (orden) {
-        orden.estado = nuevoEstado;
-        localStorage.setItem("ordenesLimpieza", JSON.stringify(ordenes));
-        registrarNotificacion(`Orden ${id} cambiada a estado:${nuevoEstado}`);
-        cargarOrdenesAdmin();
-        cargarNotificaciones();
+window.cambiarEstado = async function(id, nuevoEstado) {
+    try {
+        await db.collection("ordenes").doc(id).update({ estado: nuevoEstado });
+    } catch (error) {
+        alert("Operación denegada por reglas de seguridad.");
     }
 }
 
-window.eliminarOrden = function(id) {
+window.eliminarOrden = async function(id) {
     if (confirm(`¿Estás seguro de eliminar la orden ${id}?`)) {
-        let ordenes = JSON.parse(localStorage.getItem("ordenesLimpieza")) || [];
-        ordenes = ordenes.filter(o => o.id !== id);
-        localStorage.setItem("ordenesLimpieza", JSON.stringify(ordenes));
-        cargarOrdenesAdmin();
+        try {
+            await db.collection("ordenes").doc(id).delete();
+        } catch (error) {
+            alert("Operación denegada por reglas de seguridad.");
+        }
     }
 }
 
-function registrarNotificacion(mensaje) {
-    let notis = JSON.parse(localStorage.getItem("notificacionesLocal")) || [];
-    notis.unshift({ mensaje, fecha: new Date().toLocaleTimeString() });
-    localStorage.setItem("notificacionesLocal", JSON.stringify(notis));
-}
-
-function cargarNotificaciones() {
+function escucharNotificaciones() {
     const listaNotificaciones = document.getElementById("listaNotificaciones");
     if (!listaNotificaciones) return;
-    
-    let notis = JSON.parse(localStorage.getItem("notificacionesLocal")) || [];
 
-    if (notis.length === 0) {
-        listaNotificaciones.innerHTML = `<p class="placeholder-text">No hay notificaciones nuevas en este momento.</p>`;
-        return;
-    }
+    db.collection("notificaciones").onSnapshot((snapshot) => {
+        if (snapshot.empty) {
+            listaNotificaciones.innerHTML = `<p class="placeholder-text">No hay notificaciones nuevas.</p>`;
+            return;
+        }
 
-    listaNotificaciones.innerHTML = "";
-    notis.forEach(n => {
-        let div = document.createElement("div");
-        div.className = `notif-item`;
-        div.innerHTML = `<i class="fa-solid fa-bell"></i> [${n.fecha}]${n.mensaje}`;
-        listaNotificaciones.appendChild(div);
+        listaNotificaciones.innerHTML = "";
+        snapshot.forEach((doc) => {
+            let n = doc.data();
+            let div = document.createElement("div");
+            div.className = `notif-item`;
+            div.innerHTML = `<i class="fa-solid fa-bell"></i> ${n.mensaje}`;
+            listaNotificaciones.appendChild(div);
+        });
     });
 }
