@@ -1,30 +1,21 @@
-﻿// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
-  authDomain: "brillaclean-b9226.firebaseapp.com",
-  projectId: "brillaclean-b9226",
-  storageBucket: "brillaclean-b9226.firebasestorage.app",
-  messagingSenderId: "509006775314",
-  appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb",
-  measurementId: "G-LCWWKB1Q7B"
+﻿const firebaseConfig = {
+    apiKey: "AIzaSyBUPG9N4UPorLaOiTYLbZ2UB6T5mUbxkLw",
+    authDomain: "brillaclean-b9226.firebaseapp.com",
+    projectId: "brillaclean-b9226",
+    storageBucket: "brillaclean-b9226.firebasestorage.app",
+    messagingSenderId: "509006775314",
+    appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb",
+    measurementId: "G-LCWWKB1Q7B"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
-const db = getFirestore(app);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+const auth = firebase.auth();
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Verificar si el usuario ya tiene una sesión activa
-    onAuthStateChanged(auth, (user) => {
+    auth.onAuthStateChanged((user) => {
         if (user) {
             mostrarPanelAdmin();
             escucharOrdenesAdmin();
@@ -38,19 +29,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (loginForm) {
         loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-            
-            // Capturar los valores ingresados en el formulario web
             const emailInput = document.getElementById("usuarioAdmin").value.trim();
             const passwordInput = document.getElementById("passwordAdmin").value.trim();
 
             try {
-                // Autenticación real contra el servidor de Firebase
-                await signInWithEmailAndPassword(auth, emailInput, passwordInput);
+                await auth.signInWithEmailAndPassword(emailInput, passwordInput);
                 loginForm.reset();
             } catch (error) {
                 console.error("Código de error Firebase:", error.code);
-                console.error("Mensaje completo:", error.message);
-                alert("Error al iniciar sesión: " + error.message);
+                alert("Error: " + error.message);
             }
         });
     }
@@ -58,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnCerrarSesion = document.getElementById("btnCerrarSesion");
     if (btnCerrarSesion) {
         btnCerrarSesion.addEventListener("click", async () => {
-            await signOut(auth);
+            await auth.signOut();
             location.reload();
         });
     }
@@ -78,15 +65,15 @@ function escucharOrdenesAdmin() {
     const tabla = document.getElementById("tablaOrdenesAdmin");
     if (!tabla) return;
 
-    onSnapshot(collection(db, "ordenes"), (snapshot) => {
+    db.collection("ordenes").onSnapshot((snapshot) => {
         if (snapshot.empty) {
             tabla.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay órdenes registradas aún.</td></tr>`;
             return;
         }
 
         tabla.innerHTML = "";
-        snapshot.forEach((documento) => {
-            let orden = documento.data();
+        snapshot.forEach((doc) => {
+            let orden = doc.data();
             let fila = document.createElement("tr");
             fila.innerHTML = `
                 <td><strong>${orden.id}</strong></td>
@@ -106,7 +93,7 @@ function escucharOrdenesAdmin() {
 
 window.cambiarEstado = async function(id, nuevoEstado) {
     try {
-        await updateDoc(doc(db, "ordenes", id), { estado: nuevoEstado });
+        await db.collection("ordenes").doc(id).update({ estado: nuevoEstado });
     } catch (error) {
         alert("Operación denegada por reglas de seguridad.");
     }
@@ -115,7 +102,7 @@ window.cambiarEstado = async function(id, nuevoEstado) {
 window.eliminarOrden = async function(id) {
     if (confirm(`¿Estás seguro de eliminar la orden ${id}?`)) {
         try {
-            await deleteDoc(doc(db, "ordenes", id));
+            await db.collection("ordenes").doc(id).delete();
         } catch (error) {
             alert("Operación denegada por reglas de seguridad.");
         }
@@ -126,15 +113,15 @@ function escucharNotificaciones() {
     const listaNotificaciones = document.getElementById("listaNotificaciones");
     if (!listaNotificaciones) return;
 
-    onSnapshot(collection(db, "notificaciones"), (snapshot) => {
+    db.collection("notificaciones").onSnapshot((snapshot) => {
         if (snapshot.empty) {
             listaNotificaciones.innerHTML = `<p class="placeholder-text">No hay notificaciones nuevas.</p>`;
             return;
         }
 
         listaNotificaciones.innerHTML = "";
-        snapshot.forEach((documento) => {
-            let n = documento.data();
+        snapshot.forEach((doc) => {
+            let n = doc.data();
             let div = document.createElement("div");
             div.className = `notif-item`;
             div.innerHTML = `<i class="fa-solid fa-bell"></i> ${n.mensaje}`;
