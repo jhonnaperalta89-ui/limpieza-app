@@ -1,5 +1,4 @@
-﻿// Archivo limpio sin modulos - Version Final
-const firebaseConfig = {
+﻿const firebaseConfig = {
     apiKey: "AIzaSyBUPG9N4UPorLaOiTYLbZ2UB6T5mUbxkLw",
     authDomain: "brillaclean-b9226.firebaseapp.com",
     projectId: "brillaclean-b9226",
@@ -39,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } catch (error) {
                 console.error("Código de error Firebase:", error.code);
                 console.error("Mensaje completo:", error.message);
-                alert("Error: " + error.message);
+                alert("Error de acceso: " + error.message);
             }
         });
     }
