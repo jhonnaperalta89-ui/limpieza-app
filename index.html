@@ -534,12 +534,18 @@
         if(formSolicitud) {
             formSolicitud.addEventListener("submit", (e) => {
                 e.preventDefault();
+                const nombre = document.getElementById("nombreCliente").value;
+                const telefono = document.getElementById("telefonoCliente").value;
+                const fecha = document.getElementById("fechaServicio").value;
+                const direccion = document.getElementById("direccionPropiedad").value;
+                const tipoServicio = document.getElementById("tipoServicioSeleccionado").value;
+
                 const nuevaOrden = {
-                    nombre: document.getElementById("nombreCliente").value,
-                    telefono: document.getElementById("telefonoCliente").value,
-                    fecha: document.getElementById("fechaServicio").value,
-                    direccion: document.getElementById("direccionPropiedad").value,
-                    tipoServicio: document.getElementById("tipoServicioSeleccionado").value,
+                    nombre: nombre,
+                    telefono: telefono,
+                    fecha: fecha,
+                    direccion: direccion,
+                    tipoServicio: tipoServicio,
                     estado: "Pendiente",
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 };
@@ -548,8 +554,11 @@
                     .then((docRef) => {
                         let idCorto = docRef.id.substring(0, 8).toUpperCase();
                         
-                        // Muestra el modal moderno con botón de copiado compatible con celulares
+                        // 1. Mostrar modal de éxito con opción de copiado
                         mostrarModalExito(idCorto);
+
+                        // 2. Enviar alerta automática a Telegram
+                        enviarAlertaTelegram(idCorto, nombre, telefono, fecha, tipoServicio);
 
                         formSolicitud.reset();
                         cerrarFormulario();
@@ -557,6 +566,38 @@
                     .catch((error) => {
                         alert("Error al enviar la reserva: " + error.message);
                     });
+            });
+        }
+
+        // Función para enviar notificación a Telegram con botones interactivos
+        function enviarAlertaTelegram(idCorto, nombre, telefono, fecha, servicio) {
+            const botToken = "TU_TOKEN_DE_BOT"; // <-- Reemplaza esto con el token que te dio BotFather
+            const chatId = "6260988939";        // Tu Chat ID configurado
+
+            const mensaje = `🚨 *¡Nueva Reserva en BrillaClean!* 🧹\n\n` +
+                            `📌 *ID:* #${idCorto}\n` +
+                            `👤 *Cliente:* ${nombre}\n` +
+                            `📞 *Teléfono:* ${telefono}\n` +
+                            `🛠 *Servicio:* ${servicio}\n` +
+                            `📅 *Fecha:* ${fecha}`;
+
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+            fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: mensaje,
+                    parse_mode: "Markdown"
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Alerta enviada a Telegram con éxito", data);
+            })
+            .catch(error => {
+                console.error("Error al enviar alerta a Telegram:", error);
             });
         }
 
