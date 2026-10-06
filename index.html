@@ -442,7 +442,7 @@
         </div>
     </section>
 
-    <!-- BARRA DE BÚSQUEDA DE ORDEN (UBICADA AL FINAL ANTES DEL FOOTER) -->
+    <!-- BARRA DE BÚSQUEDA DE ESTADO DE ORDEN -->
     <section style="max-width: 600px; margin: 40px auto; padding: 0 20px; text-align: center;">
         <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
             <h3 style="color: #0F3B34; margin-top: 0; font-size: 1.2rem;">¿Ya reservaste? Consulta el estado de tu orden</h3>
@@ -547,13 +547,55 @@
                 db.collection("ordenes").add(nuevaOrden)
                     .then((docRef) => {
                         let idCorto = docRef.id.substring(0, 8).toUpperCase();
-                        alert(`¡Reserva enviada con éxito! Tu ID de orden es #${idCorto}. Guárdalo para consultar tu estado.`);
+                        
+                        // Muestra el modal moderno con botón de copiado
+                        mostrarModalExito(idCorto);
+
                         formSolicitud.reset();
                         cerrarFormulario();
                     })
                     .catch((error) => {
                         alert("Error al enviar la reserva: " + error.message);
                     });
+            });
+        }
+
+        // Función para mostrar el modal de éxito con opción de copiado
+        function mostrarModalExito(codigo) {
+            let modalAnterior = document.getElementById("modalExitoReserva");
+            if(modalAnterior) modalAnterior.remove();
+
+            let modalHtml = `
+                <div id="modalExitoReserva" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 2000;">
+                    <div style="background: white; padding: 30px; border-radius: 20px; width: 380px; max-width: 90%; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.2);">
+                        <div style="font-size: 3rem; color: #28a745; margin-bottom: 10px;"><i class="fas fa-check-circle"></i></div>
+                        <h3 style="color: #0F3B34; margin-top: 0;">¡Reserva Enviada con Éxito!</h3>
+                        <p style="color: #555; font-size: 0.95rem;">Tu código de seguimiento es:</p>
+                        <div style="background: #f1f1f1; padding: 12px; border-radius: 8px; font-size: 1.3rem; font-weight: bold; letter-spacing: 1px; color: #0F3B34; margin: 15px 0;" id="textoCodigoOrden">#${codigo}</div>
+                        <button onclick="copiarCodigoOrden('${codigo}')" id="btnCopiarModal" style="background-color: #A4977E; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 10px;">
+                            <i class="fas fa-copy"></i> Copiar Código
+                        </button>
+                        <button onclick="document.getElementById('modalExitoReserva').remove()" style="background-color: #0F3B34; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%;">
+                            Entendido
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        // Función para copiar al portapapeles
+        function copiarCodigoOrden(codigo) {
+            navigator.clipboard.writeText("#" + codigo).then(() => {
+                let btn = document.getElementById("btnCopiarModal");
+                btn.innerHTML = `<i class="fas fa-check"></i> ¡Copiado al portapapeles!`;
+                btn.style.backgroundColor = "#28a745";
+                setTimeout(() => {
+                    btn.innerHTML = `<i class="fas fa-copy"></i> Copiar Código`;
+                    btn.style.backgroundColor = "#A4977E";
+                }, 3000);
+            }).catch(err => {
+                alert("No se pudo copiar automáticamente. Puedes seleccionarlo manualmente.");
             });
         }
 
