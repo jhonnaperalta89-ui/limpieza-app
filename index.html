@@ -569,10 +569,10 @@
             });
         }
 
-        // Función para enviar notificación a Telegram con botones interactivos
+        // Función para enviar notificación a Telegram con token y chat ID configurados
         function enviarAlertaTelegram(idCorto, nombre, telefono, fecha, servicio) {
-            const botToken = "TU_TOKEN_DE_BOT"; // <-- Reemplaza esto con el token que te dio BotFather
-            const chatId = "6260988939";        // Tu Chat ID configurado
+            const botToken = "8919137259:AAFGQDeeilZZclbE7jvtwzyzyTiEQ7pR2a4"; 
+            const chatId = "6260988939";         
 
             const mensaje = `🚨 *¡Nueva Reserva en BrillaClean!* 🧹\n\n` +
                             `📌 *ID:* #${idCorto}\n` +
@@ -625,7 +625,7 @@
             document.body.insertAdjacentHTML('beforeend', modalHtml);
         }
 
-        // Función robusta para copiar al portapapeles (Compatible con PC y Celulares)
+        // Función robusta para copiar al portapapeles
         function copiarCodigoOrden(codigo) {
             let textoACopiar = "#" + codigo;
             
