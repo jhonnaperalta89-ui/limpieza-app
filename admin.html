@@ -3,96 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Admin | BrillaClean</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/admin.css">
+    <title>Panel de Administración - BrillaClean</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="admin-body">
+    <style>
+        :root {
+            --color-principal: #0F3B34;
+            --color-secundario: #A4977E;
+            --color-fondo: #F8F7F4;
+            --fuente-principal: 'Poppins', sans-serif;
+        }
+        body {
+            font-family: var(--fuente-principal);
+            background-color: var(--color-fondo);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .hidden { display: none !important; }
 
-    <div id="loginModalContainer" class="login-overlay">
+        /* Estilo Login */
+        #loginModalContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--color-principal), #09231f);
+        }
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+        .login-card h2 { color: var(--color-principal); margin-bottom: 20px; }
+        .login-card input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--color-principal);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .login-card a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        /* Estilo Panel de Control */
+        .admin-header {
+            background-color: var(--color-principal);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-header h1 { margin: 0; font-size: 1.5rem; }
+        .btn-logout {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .admin-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .table-responsive {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+        }
+        th { color: var(--color-principal); font-weight: 700; }
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .badge.Confirmado { background-color: #d4edda; color: #155724; }
+        .badge.Rechazado { background-color: #f8d7da; color: #721c24; }
+        
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 5px;
+            color: white;
+        }
+        .btn-aprobar { background-color: #28a745; }
+        .btn-rechazar { background-color: #ffc107; color: #333; }
+        .btn-eliminar { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <!-- MODAL DE LOGIN ADMIN -->
+    <div id="loginModalContainer">
         <div class="login-card">
-            <h2><i class="fa-solid fa-lock"></i> Acceso Restringido</h2>
-            <p>Ingresa tus credenciales administrativas para continuar.</p>
+            <h2>Acceso Administrador</h2>
             <form id="loginForm">
-                <div class="form-group" style="margin-bottom: 15px; text-align: left;">
-                    <label for="usuarioAdmin">Usuario:</label>
-                    <input type="text" id="usuarioAdmin" required placeholder="Usuario">
-                </div>
-                <div class="form-group" style="margin-bottom: 20px; text-align: left;">
-                    <label for="passwordAdmin">Contraseña:</label>
-                    <input type="password" id="passwordAdmin" required placeholder="Contraseña">
-                </div>
-                <button type="submit" class="btn-primary" style="width: 100%;">Iniciar Sesión</button>
-                <div style="margin-top: 15px; text-align: center;">
-                    <a href="index.html" style="color: #94a3b8; font-size: 0.85rem; text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Volver a la página principal</a>
-                </div>
+                <!-- Credenciales predeterminadas para mayor comodidad -->
+                <input type="email" id="usuarioAdmin" value="jhonnaperalta15@gmail.com" placeholder="Correo de administrador" required>
+                <input type="password" id="passwordAdmin" value="Catalina1208" placeholder="Contraseña" required>
+                <button type="submit">Iniciar Sesión</button>
             </form>
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Volver a la página principal</a>
         </div>
     </div>
 
+    <!-- CONTENIDO DEL PANEL DE ADMIN -->
     <div id="panelAdminContent" class="hidden">
-        <header class="main-header admin-header-bg">
-            <div class="container nav-container">
-                <h1><i class="fa-solid fa-gauge-high"></i> Panel de Administración</h1>
-                <div>
-                    <a href="index.html" class="nav-link" style="margin-right: 15px;"><i class="fa-solid fa-house"></i> Ver Web</a>
-                    <button id="btnCerrarSesion" class="btn-sm btn-danger"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
-                </div>
-            </div>
+        <header class="admin-header">
+            <h1>Panel de Gestión - BrillaClean</h1>
+            <button id="btnCerrarSesion" class="btn-logout">Cerrar Sesión</button>
         </header>
 
-        <main class="container admin-container" style="padding-top: 30px;">
-            <section class="admin-card alert-simulator">
-                <h3><i class="fa-solid fa-mobile-screen-button"></i> Centro de Notificaciones Móviles (Simulador Local)</h3>
-                <p>Alertas automáticas de nuevas reservas y cambios de estado.</p>
-                <div id="listaNotificaciones" class="notifications-box">
-                    <p class="placeholder-text">No hay notificaciones nuevas en este momento.</p>
-                </div>
-            </section>
-
-            <section class="admin-card">
-                <h3><i class="fa-solid fa-calendar-xmark"></i> Bloquear Fecha en el Calendario</h3>
-                <form id="bloqueoForm" class="inline-form">
-                    <div class="form-group">
-                        <label for="fechaBloqueo">Fecha a Bloquear:</label>
-                        <input type="date" id="fechaBloqueo" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="motivoBloqueo">Motivo:</label>
-                        <input type="text" id="motivoBloqueo" placeholder="Ej. Feriado / Ocupado" required>
-                    </div>
-                    <button type="submit" class="btn-warning"><i class="fa-solid fa-ban"></i> Bloquear Fecha</button>
-                </form>
-            </section>
-
-            <section class="admin-card">
-                <h3><i class="fa-solid fa-list-check"></i> Listado de Órdenes y Solicitudes</h3>
-                <div class="table-responsive">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>N° Orden</th>
-                                <th>Cliente</th>
-                                <th>Servicio</th>
-                                <th>Fecha / Hora</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tablaOrdenesAdmin"></tbody>
-                    </table>
-                </div>
-            </section>
-        </main>
+        <div class="admin-container">
+            <h2>Órdenes de Servicios Recibidas</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Orden</th>
+                            <th>Cliente / Teléfono</th>
+                            <th>Servicio</th>
+                            <th>Fecha / Dirección</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaOrdenesAdmin">
+                        <!-- Las órdenes se cargarán automáticamente aquí mediante Firestore -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <!-- Scripts de Firebase Compat -->
+    <!-- SDKs de Firebase Compat -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
     
-    <!-- Script de control del panel -->
-<script type="module" src="js/admin.js"></script>
+    <!-- Script del Panel Admin -->
+    <script src="js/admin.js"></script>
 </body>
 </html>
