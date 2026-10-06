@@ -548,7 +548,7 @@
                     .then((docRef) => {
                         let idCorto = docRef.id.substring(0, 8).toUpperCase();
                         
-                        // Muestra el modal moderno con botón de copiado
+                        // Muestra el modal moderno con botón de copiado compatible con celulares
                         mostrarModalExito(idCorto);
 
                         formSolicitud.reset();
@@ -584,19 +584,56 @@
             document.body.insertAdjacentHTML('beforeend', modalHtml);
         }
 
-        // Función para copiar al portapapeles
+        // Función robusta para copiar al portapapeles (Compatible con PC y Celulares)
         function copiarCodigoOrden(codigo) {
-            navigator.clipboard.writeText("#" + codigo).then(() => {
-                let btn = document.getElementById("btnCopiarModal");
+            let textoACopiar = "#" + codigo;
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textoACopiar).then(() => {
+                    exitoCopiado();
+                }).catch(err => {
+                    copiarMetodoAlternativo(textoACopiar);
+                });
+            } else {
+                copiarMetodoAlternativo(textoACopiar);
+            }
+        }
+
+        function copiarMetodoAlternativo(texto) {
+            let textArea = document.createElement("textarea");
+            textArea.value = texto;
+            textArea.style.position = "fixed";
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                let copiado = document.execCommand('copy');
+                if (copiado) {
+                    exitoCopiado();
+                } else {
+                    alert("Por favor, copia este código manualmente: " + texto);
+                }
+            } catch (err) {
+                alert("Por favor, copia este código manualmente: " + texto);
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        function exitoCopiado() {
+            let btn = document.getElementById("btnCopiarModal");
+            if(btn) {
                 btn.innerHTML = `<i class="fas fa-check"></i> ¡Copiado al portapapeles!`;
                 btn.style.backgroundColor = "#28a745";
                 setTimeout(() => {
                     btn.innerHTML = `<i class="fas fa-copy"></i> Copiar Código`;
                     btn.style.backgroundColor = "#A4977E";
                 }, 3000);
-            }).catch(err => {
-                alert("No se pudo copiar automáticamente. Puedes seleccionarlo manualmente.");
-            });
+            }
         }
 
         // Función para consultar el estado de la orden por ID
