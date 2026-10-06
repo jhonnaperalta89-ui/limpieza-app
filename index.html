@@ -3,20 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrillaClean - Servicios de Limpieza Premium</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <!-- Fuente tipográfica elegante, similar a la de la imagen -->
+    <title>BrillaClean - Servicios de Limpieza</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Iconos de FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Estilos CSS integrados para mayor rapidez y facilidad de copia */
         :root {
-            --color-principal: #0F3B34; /* Verde oscuro */
-            --color-secundario: #A4977E; /* Dorado/Beige */
-            --color-fondo: #F8F7F4; /* Crema muy claro */
+            --color-principal: #0F3B34;
+            --color-secundario: #A4977E;
+            --color-fondo: #F8F7F4;
             --fuente-principal: 'Poppins', sans-serif;
         }
 
@@ -29,7 +25,6 @@
             line-height: 1.6;
         }
 
-        /* --- CABECERA --- */
         header {
             background: linear-gradient(to bottom right, #E8E5DF, var(--color-fondo));
             padding: 30px 20px;
@@ -63,16 +58,18 @@
 
         header h1 {
             margin: 0;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: var(--color-principal);
             text-transform: uppercase;
+            text-align: left;
         }
 
         header p {
             margin: 5px 0 0 0;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #555;
+            text-align: left;
         }
 
         .tagline-box {
@@ -82,10 +79,8 @@
             border-radius: 10px;
             font-style: italic;
             font-weight: 600;
-            margin-top: 10px;
         }
 
-        /* --- SECCIÓN PRINCIPAL (SERVICIOS) --- */
         main {
             max-width: 1200px;
             margin: 40px auto;
@@ -97,95 +92,90 @@
 
         @media (max-width: 768px) {
             main { grid-template-columns: 1fr; }
-            .header-content { justify-content: center; }
+            .header-content { justify-content: center; text-align: center; }
+            header h1, header p { text-align: center; }
         }
 
         .servicio-card {
             background-color: white;
-            padding: 30px;
+            padding: 40px 30px 30px 30px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             position: relative;
-            transition: transform 0.3s ease;
+            margin-top: 30px;
         }
 
-        .servicio-card:hover { transform: translateY(-5px); }
-
-        /* Estilo de icono circular */
         .icono-servicio {
             position: absolute;
-            top: -40px;
+            top: -35px;
             left: 30px;
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             background-color: var(--color-principal);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: white;
-            border: 5px solid white;
+            border: 4px solid white;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .servicio-header {
-            margin-left: 100px; /* Espacio para el icono */
-            margin-bottom: 20px;
-        }
-
         .servicio-header h2 {
-            margin: 0;
-            font-size: 1.8rem;
+            margin: 0 0 5px 0;
+            font-size: 1.5rem;
             color: var(--color-principal);
             font-weight: 700;
         }
 
-        .servicio-header .precio {
+        .precio {
             font-size: 2.5rem;
             font-weight: 800;
             color: var(--color-principal);
             margin: 5px 0;
         }
 
-        .servicio-header .nota {
+        .nota {
             color: #777;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
         }
 
         .checklist {
             list-style: none;
             padding: 0;
             margin: 20px 0;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
         }
 
         .checklist li {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 10px;
+            color: #444;
+            font-size: 0.95rem;
         }
 
         .checklist li i {
             color: var(--color-principal);
-            margin-top: 4px;
         }
 
         .card-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 30px;
+            margin-top: 25px;
             padding-top: 20px;
             border-top: 1px solid #eee;
-            flex-wrap: wrap;
-            gap: 15px;
         }
 
         .btn-reservar {
             background-color: var(--color-principal);
             color: white;
-            padding: 15px 30px;
+            padding: 12px 25px;
             border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
@@ -197,57 +187,62 @@
         .airbnb-badge {
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: #555;
-            font-size: 0.9rem;
+            gap: 8px;
+            color: #666;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-align: right;
         }
-        .airbnb-badge i { color: #FF5A5F; font-size: 1.5rem;}
+        .airbnb-badge i { color: #FF5A5F; font-size: 1.4rem; }
 
-        /* --- SECCIÓN ICONOS INFERIORES --- */
         .iconos-inferiores {
             max-width: 1200px;
             margin: 40px auto;
-            padding: 0 20px 40px 20px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 30px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .iconos-inferiores { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 500px) {
+            .iconos-inferiores { grid-template-columns: 1fr; }
         }
 
         .icono-box {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
             text-align: center;
-            width: 200px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
         }
 
         .icono-box i {
-            font-size: 3rem;
+            font-size: 2.2rem;
             color: var(--color-secundario);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .icono-box h4 {
-            margin: 0;
-            font-size: 1.1rem;
+            margin: 0 0 8px 0;
+            font-size: 1.05rem;
             color: var(--color-principal);
             font-weight: 700;
         }
 
         .icono-box p {
             margin: 0;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #666;
-            line-height: 1.4;
         }
 
-        /* --- FOOTER --- */
         footer {
             background-color: var(--color-principal);
             color: white;
             padding: 40px 20px;
+            margin-top: 50px;
         }
 
         .footer-content {
@@ -255,7 +250,7 @@
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
             flex-wrap: wrap;
             gap: 30px;
         }
@@ -264,8 +259,6 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            flex: 1;
-            min-width: 250px;
         }
 
         .footer-item i {
@@ -275,12 +268,13 @@
 
         .footer-item h3 {
             margin: 0;
-            font-size: 1.2rem;
+            font-size: 1.05rem;
         }
 
         .footer-item p {
-            margin: 5px 0 0 0;
+            margin: 3px 0 0 0;
             font-size: 0.9rem;
+            color: #ddd;
         }
 
         .footer-tagline {
@@ -288,17 +282,18 @@
             margin-top: 30px;
             font-style: italic;
             font-size: 1rem;
+            color: #ccc;
         }
 
-        /* Estilo para la sección de formulario de reserva que mostraremos al hacer clic */
+        /* Modal Formulario */
         #reservaFormContainer {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            display: none; /* Oculto por defecto */
+            background-color: rgba(0,0,0,0.6);
+            display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -311,40 +306,44 @@
             width: 400px;
             max-width: 90%;
             position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
         }
 
         .reserva-form-box h3 { color: var(--color-principal); margin-top: 0; }
         .reserva-form-box input, select {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: 12px;
+            margin-bottom: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            box-sizing: border-box; /* Importante para que padding no agrande el input */
+            box-sizing: border-box;
+            font-family: var(--fuente-principal);
         }
 
         .btn-cerrar-form {
             position: absolute;
-            top: 10px;
+            top: 15px;
             right: 15px;
             cursor: pointer;
             color: #999;
+            font-size: 1.2rem;
         }
 
-        .reserva-form-box button {
+        .reserva-form-box button[type="submit"] {
             background-color: var(--color-principal);
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 12px;
             border-radius: 8px;
             cursor: pointer;
             width: 100%;
+            font-weight: 600;
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
 
-    <!-- Cabecera principal -->
     <header>
         <div class="header-content">
             <div class="logo-area">
@@ -362,9 +361,8 @@
         </div>
     </header>
 
-    <!-- Sección central de servicios -->
     <main>
-        <!-- Tarjeta de Limpieza Entre Huéspedes -->
+        <!-- Tarjeta 1 -->
         <section class="servicio-card">
             <div class="icono-servicio">
                 <i class="fas fa-broom"></i>
@@ -384,21 +382,18 @@
                 <li><i class="fas fa-check"></i> Lavado de sábanas y toallas</li>
             </ul>
             <div class="card-footer">
-                <a href="#" class="btn-reservar" onclick="abrirFormulario('Limpieza Entre Huéspedes', '35000')">Reservar Ahora</a>
+                <a href="#" class="btn-reservar" onclick="abrirFormulario('Limpieza Entre Huéspedes')">Reservar Ahora</a>
                 <div class="airbnb-badge">
                     <i class="fab fa-airbnb"></i>
-                    <div>
-                        ARRENDOS<br>
-                        VACACIONALES
-                    </div>
+                    <div>ARRENDOS<br>VACACIONALES</div>
                 </div>
             </div>
         </section>
 
-        <!-- Tarjeta de Limpieza Profunda -->
+        <!-- Tarjeta 2 -->
         <section class="servicio-card">
             <div class="icono-servicio">
-                <i class="fas fa-spray-can"></i>
+                <i class="fas fa-spray-can-sparkles"></i>
             </div>
             <div class="servicio-header">
                 <h2>LIMPIEZA PROFUNDA</h2>
@@ -406,48 +401,47 @@
                 <div class="nota">Para una presentación impecable</div>
             </div>
             <ul class="checklist">
-                 <!-- Aquí podrías agregar una checklist específica para este servicio si lo deseas, aunque en la imagen no aparece listada explicitamente. Usaremos los mismos puntos genéricos por coherencia de diseño. -->
-                <li><i class="fas fa-check"></i> Limpieza detallada de todas las áreas</li>
-                <li><i class="fas fa-check"></i> Desinfección profunda de superficies</li>
-                <li><i class="fas fa-check"></i> Limpieza de electrodomésticos por dentro y fuera</li>
-                <li><i class="fas fa-check"></i> Limpieza de vidrios y ventanas</li>
-                <li><i class="fas fa-check"></i> Aspirado y lavado de alfombras (si aplica)</li>
-                <li><i class="fas fa-check"></i> Eliminación de polvo acumulado</li>
+                <li><i class="fas fa-check"></i> Limpieza detallada profunda de espacios</li>
+                <li><i class="fas fa-check"></i> Desinfección completa de áreas críticas</li>
+                <li><i class="fas fa-check"></i> Limpieza a fondo de electrodomésticos</li>
+                <li><i class="fas fa-check"></i> Cristales, marcos y zócalos</li>
+                <li><i class="fas fa-check"></i> Eliminación exhaustiva de polvo y manchas</li>
+                <li><i class="fas fa-check"></i> Ideal para entrega o puesta a punto</li>
             </ul>
             <div class="card-footer">
-                <a href="#" class="btn-reservar" onclick="abrirFormulario('Limpieza Profunda', '70000')">Reservar Ahora</a>
+                <a href="#" class="btn-reservar" onclick="abrirFormulario('Limpieza Profunda')">Reservar Ahora</a>
                 <div class="airbnb-badge">
-                     <!-- Puedes dejar este espacio en blanco o poner un icono relacionado con el detalle, como un sello -->
+                    <i class="fas fa-shield-halved" style="color: var(--color-secundario);"></i>
+                    <div>GARANTÍA<br>BRILLACLEAN</div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Sección de iconos inferiores -->
+    <!-- Iconos inferiores -->
     <section class="iconos-inferiores">
         <div class="icono-box">
             <i class="fas fa-award"></i>
             <h4>Puntualidad</h4>
-            <p>Nos comprometemos con los tiempos de entrega para que tu propiedad esté siempre lista.</p>
+            <p>Compromiso absoluto con los tiempos establecidos.</p>
         </div>
         <div class="icono-box">
             <i class="fas fa-shield-alt"></i>
             <h4>Confianza</h4>
-            <p>Nuestro personal es de confianza y está calificado para cuidar tu propiedad.</p>
+            <p>Personal calificado y seguro para tus espacios.</p>
         </div>
         <div class="icono-box">
             <i class="fas fa-leaf"></i>
             <h4>Productos de calidad</h4>
-            <p>Utilizamos productos efectivos y respetuosos con el medio ambiente.</p>
+            <p>Insumos profesionales que cuidan superficies.</p>
         </div>
         <div class="icono-box">
             <i class="fas fa-handshake"></i>
             <h4>Ideal para corredores</h4>
-            <p>Simplificamos la gestión de propiedades para anfitriones y corredores.</p>
+            <p>Soporte especializado para anfitriones y propiedades.</p>
         </div>
     </section>
 
-    <!-- Footer de contacto -->
     <footer>
         <div class="footer-content">
             <div class="footer-item">
@@ -461,49 +455,45 @@
                 <i class="fas fa-calendar-alt"></i>
                 <div>
                     <h3>Horario</h3>
-                    <p>Lunes a Sábado 9:00 a 18:00 horas</p>
+                    <p>Lunes a Sábado 9:00 a 18:00 hrs</p>
                 </div>
             </div>
-             <div class="footer-item">
+            <div class="footer-item">
                 <i class="fas fa-map-marker-alt"></i>
                 <div>
                     <h3>Ubicación</h3>
-                    <p>La Serena y Coquimbo | Servicio a domicilio</p>
+                    <p>La Serena y Coquimbo</p>
                 </div>
             </div>
         </div>
         <p class="footer-tagline">Limpieza que suma valor ♡</p>
     </footer>
 
-    <!-- FORMULARIO DE RESERVA (OCULTO) -->
+    <!-- Formulario flotante de reserva -->
     <div id="reservaFormContainer">
         <div class="reserva-form-box">
             <span class="btn-cerrar-form" onclick="cerrarFormulario()"><i class="fas fa-times"></i></span>
             <h3>Solicitar Reserva</h3>
             <form id="formSolicitud">
                 <input type="text" id="nombreCliente" placeholder="Tu Nombre Completo" required>
-                <input type="tel" id="telefonoCliente" placeholder="Tu Teléfono (ej. +56912345678)" required>
-                 <input type="email" id="emailCliente" placeholder="Tu Correo Electrónico (opcional)">
+                <input type="tel" id="telefonoCliente" placeholder="Tu Teléfono (+569...)" required>
                 <input type="date" id="fechaServicio" required>
                 <input type="text" id="direccionPropiedad" placeholder="Dirección de la Propiedad" required>
-                <select id="tipoServicioSeleccionado" disabled>
+                <select id="tipoServicioSeleccionado">
                     <option value="Limpieza Entre Huéspedes">Limpieza Entre Huéspedes ($35.000)</option>
                     <option value="Limpieza Profunda">Limpieza Profunda ($70.000)</option>
                 </select>
-                <button type="submit">Enviar Solicitud de Reserva</button>
+                <button type="submit">Enviar Reserva</button>
             </form>
         </div>
     </div>
 
-
-    <!-- --- INTEGRACIÓN CON FIREBASE (LA MISMA QUE USAMOS AYER) --- -->
-    <!-- Scripts de Firebase Compat -->
+    <!-- Firebase Compat SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
     <script>
-        // Configuración exacta de tu panel de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
             authDomain: "brillaclean-b9226.firebaseapp.com",
@@ -514,66 +504,42 @@
             measurementId: "G-LCWWKB1Q7B"
         };
 
-        // Inicializar Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
         const db = firebase.firestore();
 
-        // Funciones para manejar el formulario de reserva
-        function abrirFormulario(nombreServicio, precio) {
-            const container = document.getElementById("reservaFormContainer");
-            container.style.display = "flex";
-
-            // Autoseleccionar el servicio en el formulario
-            const select = document.getElementById("tipoServicioSeleccionado");
-            select.value = nombreServicio;
-
-            // Guardar el nombre y precio del servicio en un campo oculto para el envío
-            // (Opcionalmente, podrías tener campos hidden para esto)
+        function abrirFormulario(servicio) {
+            document.getElementById("reservaFormContainer").style.display = "flex";
+            document.getElementById("tipoServicioSeleccionado").value = servicio;
         }
 
         function cerrarFormulario() {
             document.getElementById("reservaFormContainer").style.display = "none";
         }
 
-        // Enviar la reserva a Firestore
         const formSolicitud = document.getElementById("formSolicitud");
         if(formSolicitud) {
             formSolicitud.addEventListener("submit", (e) => {
                 e.preventDefault();
-
-                // Capturar los valores del formulario
-                const nombre = document.getElementById("nombreCliente").value;
-                const telefono = document.getElementById("telefonoCliente").value;
-                 const email = document.getElementById("emailCliente").value;
-                const fecha = document.getElementById("fechaServicio").value;
-                const direccion = document.getElementById("direccionPropiedad").value;
-                const servicio = document.getElementById("tipoServicioSeleccionado").value;
-
-                // Crear un objeto con la nueva orden
                 const nuevaOrden = {
-                    nombre: nombre,
-                    telefono: telefono,
-                    email: email,
-                    fecha: fecha,
-                    direccion: direccion,
-                    tipoServicio: servicio,
-                    estado: "Pendiente", // Estado inicial por defecto
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp() // Hora de creación del servidor
+                    nombre: document.getElementById("nombreCliente").value,
+                    telefono: document.getElementById("telefonoCliente").value,
+                    fecha: document.getElementById("fechaServicio").value,
+                    direccion: document.getElementById("direccionPropiedad").value,
+                    tipoServicio: document.getElementById("tipoServicioSeleccionado").value,
+                    estado: "Pendiente",
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                // Guardar en la colección "ordenes" de Firestore
                 db.collection("ordenes").add(nuevaOrden)
-                    .then((docRef) => {
-                        console.log("Orden guardada con ID: ", docRef.id);
-                        alert("¡Tu solicitud de reserva se ha enviado correctamente! Nos pondremos en contacto contigo a la brevedad.");
+                    .then(() => {
+                        alert("¡Reserva enviada con éxito! Nos pondremos en contacto.");
                         formSolicitud.reset();
                         cerrarFormulario();
                     })
                     .catch((error) => {
-                        console.error("Error al guardar la orden: ", error);
-                        alert("Hubo un error al enviar la solicitud. Por favor, inténtalo de nuevo o contáctanos directamente por teléfono.");
+                        alert("Error al enviar la reserva: " + error.message);
                     });
             });
         }
