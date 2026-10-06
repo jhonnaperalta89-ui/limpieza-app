@@ -8,7 +8,6 @@
     measurementId: "G-LCWWKB1Q7B"
 };
 
-// Inicializar Firebase de forma segura con el SDK global
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
@@ -16,12 +15,10 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Control de sesión activa
     auth.onAuthStateChanged((user) => {
         if (user) {
             mostrarPanelAdmin();
             escucharOrdenesAdmin();
-            escucharNotificaciones();
         } else {
             ocultarPanelAdmin();
         }
@@ -31,15 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (loginForm) {
         loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-            
-            const emailInput = document.getElementById("usuarioAdmin").value.trim();
-            const passwordInput = document.getElementById("passwordAdmin").value.trim();
-
+            const email = document.getElementById("usuarioAdmin").value.trim();
+            const password = document.getElementById("passwordAdmin").value.trim();
             try {
-                await auth.signInWithEmailAndPassword(emailInput, passwordInput);
+                await auth.signInWithEmailAndPassword(email, password);
                 loginForm.reset();
             } catch (error) {
-                console.error("Error de autenticación:", error.message);
                 alert("Error de acceso: " + error.message);
             }
         });
@@ -70,23 +64,25 @@ function escucharOrdenesAdmin() {
 
     db.collection("ordenes").onSnapshot((snapshot) => {
         if (snapshot.empty) {
-            tabla.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay órdenes registradas aún.</td></tr>`;
+            tabla.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay órdenes registradas.</td></tr>`;
             return;
         }
 
         tabla.innerHTML = "";
         snapshot.forEach((doc) => {
             let orden = doc.data();
+            let idCorto = doc.id.substring(0, 8).toUpperCase(); // ID resumido para fácil lectura
             let fila = document.createElement("tr");
             fila.innerHTML = `
-                <td><strong>${orden.id || doc.id}</strong></td>
-                <td>${orden.nombre || 'N/A'}<br><small>${orden.telefono || ''}</small></td>
+                <td><strong>#${idCorto}</strong></td>
+                <td>${orden.nombre || 'N/A'}<br><small><i class="fas fa-phone"></i> ${orden.telefono || ''}</small></td>
                 <td>${orden.tipoServicio || 'Limpieza'}</td>
-                <td>${orden.fecha || ''}<br><small>${orden.hora || ''}</small></td>
-                <td><span class="badge-status">${orden.estado || 'Pendiente'}</span></td>
+                <td>${orden.fecha || ''}<br><small><i class="fas fa-map-marker-alt"></i> ${orden.direccion || ''}</small></td>
+                <td><span class="badge ${orden.estado || 'Pendiente'}">${orden.estado || 'Pendiente'}</span></td>
                 <td>
-                    <button onclick="cambiarEstado('${doc.id}', 'Confirmado')" class="btn-sm btn-success">Aprobar</button>
-                    <button onclick="eliminarOrden('${doc.id}')" class="btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                    <button onclick="cambiarEstado('${doc.id}', 'Confirmado')" class="btn-action btn-aprobar" title="Aprobar"><i class="fas fa-check"></i></button>
+                    <button onclick="cambiarEstado('${doc.id}', 'Rechazado')" class="btn-action btn-rechazar" title="Rechazar"><i class="fas fa-times"></i></button>
+                    <button onclick="eliminarOrden('${doc.id}')" class="btn-action btn-eliminar" title="Eliminar"><i class="fas fa-trash"></i></button>
                 </td>
             `;
             tabla.appendChild(fila);
@@ -98,37 +94,16 @@ window.cambiarEstado = async function(id, nuevoEstado) {
     try {
         await db.collection("ordenes").doc(id).update({ estado: nuevoEstado });
     } catch (error) {
-        alert("Operación denegada por reglas de seguridad.");
+        alert("Operación denegada o error al actualizar.");
     }
 }
 
 window.eliminarOrden = async function(id) {
-    if (confirm(`¿Estás seguro de eliminar la orden?`)) {
+    if (confirm("¿Estás seguro de eliminar esta orden del registro?")) {
         try {
             await db.collection("ordenes").doc(id).delete();
         } catch (error) {
-            alert("Operación denegada por reglas de seguridad.");
+            alert("Operación denegada o error al eliminar.");
         }
     }
-}
-
-function escucharNotificaciones() {
-    const listaNotificaciones = document.getElementById("listaNotificaciones");
-    if (!listaNotificaciones) return;
-
-    db.collection("notificaciones").onSnapshot((snapshot) => {
-        if (snapshot.empty) {
-            listaNotificaciones.innerHTML = `<p class="placeholder-text">No hay notificaciones nuevas.</p>`;
-            return;
-        }
-
-        listaNotificaciones.innerHTML = "";
-        snapshot.forEach((doc) => {
-            let n = doc.data();
-            let div = document.createElement("div");
-            div.className = `notif-item`;
-            div.innerHTML = `<i class="fa-solid fa-bell"></i> ${n.mensaje}`;
-            listaNotificaciones.appendChild(div);
-        });
-    });
 }
