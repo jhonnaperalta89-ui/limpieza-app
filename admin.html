@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - BrillaClean</title>
+    <!-- Enlace al Manifest para que sea instalable como App -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0F3B34">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -15,176 +19,372 @@
             --color-fondo: #F8F7F4;
             --fuente-principal: 'Poppins', sans-serif;
         }
+
         body {
             font-family: var(--fuente-principal);
             background-color: var(--color-fondo);
+            color: #333;
             margin: 0;
             padding: 0;
-            color: #333;
         }
-        .hidden { display: none !important; }
 
-        /* Estilo Login */
-        #loginModalContainer {
+        /* Pantalla de Login */
+        #loginContainer {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, var(--color-principal), #09231f);
+            background: linear-gradient(to bottom right, #0F3B34, #1b5e54);
         }
-        .login-card {
+
+        .login-box {
             background: white;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 380px;
+            width: 380px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             text-align: center;
         }
-        .login-card h2 { color: var(--color-principal); margin-bottom: 20px; }
-        .login-card input {
+
+        .login-box h2 { color: var(--color-principal); margin-bottom: 20px; }
+        .login-box input {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
             border: 1px solid #ddd;
             border-radius: 8px;
             box-sizing: border-box;
+            font-family: var(--fuente-principal);
         }
-        .login-card button {
-            width: 100%;
-            padding: 12px;
+
+        .login-box button {
             background-color: var(--color-principal);
             color: white;
             border: none;
+            padding: 12px;
             border-radius: 8px;
-            font-weight: 600;
             cursor: pointer;
-        }
-        .login-card a {
-            display: inline-block;
-            margin-top: 15px;
-            color: #666;
-            text-decoration: none;
-            font-size: 0.9rem;
+            width: 100%;
+            font-weight: 600;
+            font-size: 1rem;
         }
 
-        /* Estilo Panel de Control */
+        /* Panel de Administración Principal */
+        #adminDashboard {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
         .admin-header {
-            background-color: var(--color-principal);
-            color: white;
-            padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
-        .admin-header h1 { margin: 0; font-size: 1.5rem; }
+
+        .admin-header h1 { margin: 0; color: var(--color-principal); font-size: 1.8rem; }
+        
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
         .btn-logout {
             background-color: #d9534f;
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
         }
-        .admin-container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+
+        .btn-audio {
+            background-color: var(--color-secundario);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
         }
-        .table-responsive {
+
+        /* Tabla de Órdenes */
+        .tabla-contenedor {
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             overflow-x: auto;
             padding: 20px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
+            font-size: 0.95rem;
         }
+
         th, td {
             padding: 15px;
             border-bottom: 1px solid #eee;
-            font-size: 0.95rem;
         }
-        th { color: var(--color-principal); font-weight: 700; }
-        .badge {
+
+        th { background-color: #fcfcfc; color: var(--color-principal); font-weight: 700; }
+
+        .badge-estado {
             padding: 5px 10px;
             border-radius: 20px;
-            font-size: 0.8rem;
             font-weight: 600;
-            background-color: #fff3cd;
-            color: #856404;
+            font-size: 0.85rem;
         }
-        .badge.Confirmado { background-color: #d4edda; color: #155724; }
-        .badge.Rechazado { background-color: #f8d7da; color: #721c24; }
-        
-        .btn-action {
+        .estado-pendiente { background: #fff3cd; color: #856404; }
+        .estado-confirmado { background: #d4edda; color: #155724; }
+        .estado-rechazado { background: #f8d7da; color: #721c24; }
+
+        .acciones-orden button {
             padding: 6px 12px;
-            border: none;
             border-radius: 6px;
+            border: none;
             cursor: pointer;
             font-weight: 600;
             margin-right: 5px;
-            color: white;
+            font-size: 0.85rem;
         }
-        .btn-aprobar { background-color: #28a745; }
-        .btn-rechazar { background-color: #ffc107; color: #333; }
-        .btn-eliminar { background-color: #dc3545; }
+        .btn-aprobar { background: #28a745; color: white; }
+        .btn-rechazar { background: #ffc107; color: #333; }
+        .btn-eliminar { background: #dc3545; color: white; }
     </style>
 </head>
 <body>
 
-    <!-- MODAL DE LOGIN ADMIN -->
-    <div id="loginModalContainer">
-        <div class="login-card">
+    <!-- PANTALLA DE LOGIN -->
+    <div id="loginContainer">
+        <div class="login-box">
             <h2>Acceso Administrador</h2>
-            <form id="loginForm">
-                <input type="email" id="usuarioAdmin" placeholder="Correo de administrador" required>
-                <input type="password" id="passwordAdmin" placeholder="Contraseña" required>
+            <form id="formLogin">
+                <input type="email" id="emailAdmin" placeholder="Correo de administrador" required>
+                <input type="password" id="adminPassword" placeholder="Contraseña" required>
                 <button type="submit">Iniciar Sesión</button>
             </form>
-            <a href="index.html"><i class="fas fa-arrow-left"></i> Volver a la página principal</a>
+            <p style="margin-top: 15px;"><a href="index.html" style="color: #666; text-decoration: none; font-size: 0.9rem;">← Volver a la página principal</a></p>
         </div>
     </div>
 
-    <!-- CONTENIDO DEL PANEL DE ADMIN -->
-    <div id="panelAdminContent" class="hidden">
-        <header class="admin-header">
-            <h1>Panel de Gestión - BrillaClean</h1>
-            <button id="btnCerrarSesion" class="btn-logout">Cerrar Sesión</button>
-        </header>
-
-        <div class="admin-container">
-            <h2>Órdenes de Servicios Recibidas</h2>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID Orden</th>
-                            <th>Cliente / Teléfono</th>
-                            <th>Servicio</th>
-                            <th>Fecha / Dirección</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaOrdenesAdmin">
-                        <!-- Las órdenes se cargarán automáticamente aquí mediante Firestore -->
-                    </tbody>
-                </table>
+    <!-- DASHBOARD DE ADMINISTRACIÓN -->
+    <div id="adminDashboard">
+        <div class="admin-header">
+            <div>
+                <h1>Gestión de Órdenes</h1>
+                <p style="margin: 5px 0 0 0; color: #666;" id="adminEmailLogueado"></p>
+            </div>
+            <div class="admin-actions">
+                <button class="btn-audio" onclick="activarAudioAlerta()"><i class="fas fa-bell"></i> Activar Sonido Alerta</button>
+                <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
             </div>
         </div>
+
+        <div class="tabla-contenedor">
+            <h3 style="color: var(--color-principal); margin-top: 0;">Órdenes Recientes</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Teléfono</th>
+                        <th>Servicio</th>
+                        <th>Fecha</th>
+                        <th>Dirección</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                <tbody id="tablaOrdenesCuerpo">
+                    <!-- Las órdenes se cargan en tiempo real aquí -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- SDKs de Firebase Compat -->
+    <!-- AUDIO DE NOTIFICACIÓN (Usando tono sintético seguro por Web Audio API) -->
+    <script>
+        function reproducirSonidoAlerta() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Nota D5
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+                
+                // Segundo tono para hacer doble beep
+                setTimeout(() => {
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.type = "sine";
+                    osc2.frequency.setValueAtTime(880, audioCtx.currentTime); // Nota A5
+                    gain2.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.start();
+                    osc2.stop(audioCtx.currentTime + 0.4);
+                }, 200);
+            } catch(e) {
+                console.log("Audio bloqueado por el navegador hasta interacción");
+            }
+        }
+
+        function activarAudioAlerta() {
+            reproducirSonidoAlerta();
+            alert("¡Audio de alerta activado con éxito! Escucharás un timbre cada vez que llegue una nueva reserva.");
+        }
+    </script>
+
+    <!-- Firebase Compat SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-    
-    <!-- Script del Panel Admin -->
-    <script src="js/admin.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
+            authDomain: "brillaclean-b9226.firebaseapp.com",
+            projectId: "brillaclean-b9226",
+            storageBucket: "brillaclean-b9226.firebasestorage.app",
+            messagingSenderId: "509006775314",
+            appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb",
+            measurementId: "G-LCWWKB1Q7B"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const loginContainer = document.getElementById("loginContainer");
+        const adminDashboard = document.getElementById("adminDashboard");
+        const formLogin = document.getElementById("formLogin");
+        const tablaCuerpo = document.getElementById("tablaOrdenesCuerpo");
+
+        // Control de Estado de Autenticación
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loginContainer.style.display = "none";
+                adminDashboard.style.display = "block";
+                document.getElementById("adminEmailLogueado").innerText = "Conectado como: " + user.email;
+                cargarOrdenesEnTiempoReal();
+            } else {
+                loginContainer.style.display = "flex";
+                adminDashboard.style.display = "none";
+            }
+        });
+
+        formLogin.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const email = document.getElementById("emailAdmin").value;
+            const pass = document.getElementById("adminPassword").value;
+
+            auth.signInWithEmailAndPassword(email, pass)
+                .catch((error) => {
+                    alert("Error de acceso: " + error.message);
+                });
+        });
+
+        function cerrarSesion() {
+            auth.signOut();
+        }
+
+        let primeraCarga = true;
+
+        // Cargar y escuchar órdenes en tiempo real con notificaciones y sonido
+        function cargarOrdenesEnTiempoReal() {
+            db.collection("ordenes").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+                let html = "";
+                
+                // Detectar si hay cambios para saber si entró una orden nueva
+                let hayNuevas = false;
+
+                snapshot.forEach((doc) => {
+                    let orden = doc.data();
+                    let idCorto = doc.id.substring(0, 8).toUpperCase();
+                    let estado = orden.estado || "Pendiente";
+                    
+                    let claseBadge = "estado-pendiente";
+                    if(estado === "Confirmado") claseBadge = "estado-confirmado";
+                    if(estado === "Rechazado") claseBadge = "estado-rechazado";
+
+                    html += `
+                        <tr>
+                            <td><strong>#${idCorto}</strong></td>
+                            <td>${orden.nombre || 'N/A'}</td>
+                            <td>${orden.telefono || 'N/A'}</td>
+                            <td>${orden.tipoServicio || 'Limpieza'}</td>
+                            <td>${orden.fecha || 'N/A'}</td>
+                            <td>${orden.direccion || 'N/A'}</td>
+                            <td><span class="badge-estado ${claseBadge}">${estado}</span></td>
+                            <td class="acciones-orden">
+                                <button class="btn-aprobar" onclick="cambiarEstadoOrden('${doc.id}', 'Confirmado')">Aprobar</button>
+                                <button class="btn-rechazar" onclick="cambiarEstadoOrden('${doc.id}', 'Rechazado')">Rechazar</button>
+                                <button class="btn-eliminar" onclick="eliminarOrden('${doc.id}')"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tablaCuerpo.innerHTML = html;
+
+                // Si no es la primera carga (la carga inicial al abrir la página), reproducir sonido porque entró nueva orden
+                if (!primeraCarga && snapshot.docChanges().some(change => change.type === "added")) {
+                    reproducirSonidoAlerta();
+                    
+                    // Notificación push de escritorio si el navegador lo permite
+                    if (Notification.permission === "granted") {
+                        new Notification("¡Nueva Reserva en BrillaClean! 🧹", {
+                            body: "Tienes una nueva solicitud de servicio pendiente.",
+                            icon: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/svgs/solid/house.svg"
+                        });
+                    }
+                }
+                primeraCarga = false;
+            });
+        }
+
+        // Funciones de gestión de órdenes
+        function cambiarEstadoOrden(id, nuevoEstado) {
+            db.collection("ordenes").doc(id).update({
+                estado: nuevoEstado
+            }).then(() => {
+                // Estado actualizado
+            }).catch(error => {
+                alert("Error al actualizar: " + error.message);
+            });
+        }
+
+        function eliminarOrden(id) {
+            if(confirm("¿Estás seguro de eliminar esta orden?")) {
+                db.collection("ordenes").doc(id).delete().catch(error => {
+                    alert("Error al eliminar: " + error.message);
+                });
+            }
+        }
+
+        // Solicitar permisos para notificaciones de escritorio al cargar
+        if (window.Notification && Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+    </script>
 </body>
 </html>
