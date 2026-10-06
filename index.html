@@ -1,101 +1,582 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrillaClean | Servicios de Limpieza Profesional</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>BrillaClean - Servicios de Limpieza Premium</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Fuente tipográfica elegante, similar a la de la imagen -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Iconos de FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos CSS integrados para mayor rapidez y facilidad de copia */
+        :root {
+            --color-principal: #0F3B34; /* Verde oscuro */
+            --color-secundario: #A4977E; /* Dorado/Beige */
+            --color-fondo: #F8F7F4; /* Crema muy claro */
+            --fuente-principal: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: var(--fuente-principal);
+            background-color: var(--color-fondo);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* --- CABECERA --- */
+        header {
+            background: linear-gradient(to bottom right, #E8E5DF, var(--color-fondo));
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .house-icon-box {
+            background-color: var(--color-principal);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1.5rem;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-principal);
+            text-transform: uppercase;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .tagline-box {
+            background-color: var(--color-secundario);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-style: italic;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* --- SECCIÓN PRINCIPAL (SERVICIOS) --- */
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            main { grid-template-columns: 1fr; }
+            .header-content { justify-content: center; }
+        }
+
+        .servicio-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .servicio-card:hover { transform: translateY(-5px); }
+
+        /* Estilo de icono circular */
+        .icono-servicio {
+            position: absolute;
+            top: -40px;
+            left: 30px;
+            width: 80px;
+            height: 80px;
+            background-color: var(--color-principal);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: white;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .servicio-header {
+            margin-left: 100px; /* Espacio para el icono */
+            margin-bottom: 20px;
+        }
+
+        .servicio-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--color-principal);
+            font-weight: 700;
+        }
+
+        .servicio-header .precio {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-principal);
+            margin: 5px 0;
+        }
+
+        .servicio-header .nota {
+            color: #777;
+            font-size: 1rem;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .checklist li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .checklist li i {
+            color: var(--color-principal);
+            margin-top: 4px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn-reservar {
+            background-color: var(--color-principal);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-reservar:hover { background-color: #09231f; }
+
+        .airbnb-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        .airbnb-badge i { color: #FF5A5F; font-size: 1.5rem;}
+
+        /* --- SECCIÓN ICONOS INFERIORES --- */
+        .iconos-inferiores {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px 40px 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .icono-box {
+            text-align: center;
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icono-box i {
+            font-size: 3rem;
+            color: var(--color-secundario);
+            margin-bottom: 10px;
+        }
+
+        .icono-box h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--color-principal);
+            font-weight: 700;
+        }
+
+        .icono-box p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--color-principal);
+            color: white;
+            padding: 40px 20px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-item i {
+            font-size: 1.5rem;
+            color: var(--color-secundario);
+        }
+
+        .footer-item h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .footer-item p {
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+        }
+
+        .footer-tagline {
+            text-align: center;
+            margin-top: 30px;
+            font-style: italic;
+            font-size: 1rem;
+        }
+
+        /* Estilo para la sección de formulario de reserva que mostraremos al hacer clic */
+        #reservaFormContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: none; /* Oculto por defecto */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .reserva-form-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 400px;
+            max-width: 90%;
+            position: relative;
+        }
+
+        .reserva-form-box h3 { color: var(--color-principal); margin-top: 0; }
+        .reserva-form-box input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box; /* Importante para que padding no agrande el input */
+        }
+
+        .btn-cerrar-form {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .reserva-form-box button {
+            background-color: var(--color-principal);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <header class="main-header">
-        <div class="container nav-container">
-            <h1 class="logo"><i class="fa-solid fa-broom"></i> BrillaClean</h1>
-            <nav class="nav-menu">
-                <a href="#reservas" class="nav-link">Reservar Cita</a>
-                <a href="#consultar" class="nav-link">Consultar Orden</a>
-                <a href="admin.html" class="nav-link admin-link-secret" title="Acceso Administrativo"><i class="fa-solid fa-lock"></i></a>
-            </nav>
+
+    <!-- Cabecera principal -->
+    <header>
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="house-icon-box">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div>
+                    <h1>SERVICIOS DE LIMPIEZA</h1>
+                    <p>Especial para Corredores de Propiedades y Arriendos de Airbnb</p>
+                </div>
+            </div>
+            <div class="tagline-box">
+                Tu propiedad en buenas manos ♡
+            </div>
         </div>
     </header>
 
-    <section class="hero-cover">
-        <div class="hero-overlay">
-            <div class="container hero-content">
-                <h2>Excelencia y Pulcritud en Cada Espacio</h2>
-                <p>Servicios de limpieza residencial, comercial y post-obra con estándares profesionales. Agenda de forma rápida, segura y transparente.</p>
-                <a href="#reservas" class="btn-hero">Agendar Mi Servicio Ahora</a>
+    <!-- Sección central de servicios -->
+    <main>
+        <!-- Tarjeta de Limpieza Entre Huéspedes -->
+        <section class="servicio-card">
+            <div class="icono-servicio">
+                <i class="fas fa-broom"></i>
             </div>
-        </div>
-    </section>
-
-    <main class="container main-content-wrapper">
-        <section id="reservas" class="card-section">
-            <h3><i class="fa-regular fa-calendar-days"></i> Agenda tu Servicio Online</h3>
-            <p class="section-subtitle">Selecciona los detalles de tu requerimiento. Las fechas ocupadas se bloquearán automáticamente.</p>
-            
-            <form id="reservaForm" class="grid-form">
-                <div class="form-group">
-                    <label for="nombre">Nombre Completo:</label>
-                    <input type="text" id="nombre" required placeholder="Ej. Juan Pérez">
+            <div class="servicio-header">
+                <h2>LIMPIEZA ENTRE HUÉSPEDES</h2>
+                <div class="precio">$35.000</div>
+                <div class="nota">Servicio rápido y eficiente</div>
+            </div>
+            <ul class="checklist">
+                <li><i class="fas fa-check"></i> Cambio de sábanas</li>
+                <li><i class="fas fa-check"></i> Limpieza de habitaciones</li>
+                <li><i class="fas fa-check"></i> Limpieza de baños</li>
+                <li><i class="fas fa-check"></i> Sala, cocina, comedor y living</li>
+                <li><i class="fas fa-check"></i> Limpieza de vidrios y superficies</li>
+                <li><i class="fas fa-check"></i> Retiro de basura</li>
+                <li><i class="fas fa-check"></i> Lavado de sábanas y toallas</li>
+            </ul>
+            <div class="card-footer">
+                <a href="#" class="btn-reservar" onclick="abrirFormulario('Limpieza Entre Huéspedes', '35000')">Reservar Ahora</a>
+                <div class="airbnb-badge">
+                    <i class="fab fa-airbnb"></i>
+                    <div>
+                        ARRENDOS<br>
+                        VACACIONALES
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="telefono">Teléfono / Celular:</label>
-                    <input type="tel" id="telefono" required placeholder="+56 9 ...">
-                </div>
-                <div class="form-group">
-                    <label for="direccion">Dirección del Servicio:</label>
-                    <input type="text" id="direccion" required placeholder="Calle, Número, Ciudad">
-                </div>
-                <div class="form-group">
-                    <label for="tipoServicio">Tipo de Limpieza:</label>
-                    <select id="tipoServicio" required>
-                        <option value="">Selecciona una opción</option>
-                        <option value="Limpieza Residencial Básica">Limpieza Residencial Básica</option>
-                        <option value="Limpieza Profunda / Post-Obra">Limpieza Profunda / Post-Obra</option>
-                        <option value="Limpieza de Oficinas">Limpieza de Oficinas</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="fechaReserva">Fecha:</label>
-                    <input type="date" id="fechaReserva" required>
-                </div>
-                <div class="form-group">
-                    <label for="horaReserva">Hora:</label>
-                    <select id="horaReserva" required>
-                        <option value="">Selecciona horario</option>
-                        <option value="09:00 AM">09:00 AM</option>
-                        <option value="12:00 PM">12:00 PM</option>
-                        <option value="03:00 PM">03:00 PM</option>
-                    </select>
-                </div>
-                <div class="form-full">
-                    <button type="submit" class="btn-primary"><i class="fa-solid fa-check-circle"></i> Confirmar y Obtener N° de Orden</button>
-                </div>
-            </form>
-            
-            <div id="resultadoReserva" class="alert-box hidden">
-                <h4>¡Reserva Solicitada con Éxito!</h4>
-                <p>Tu Número de Orden es: <strong id="numeroOrdenGenerado" class="badge-code"></strong></p>
-                <p class="small-text">Guarda este número para consultar el estado de tu servicio. Notificación local simulada enviada.</p>
             </div>
         </section>
 
-        <section id="consultar" class="card-section">
-            <h3><i class="fa-solid fa-magnifying-glass"></i> Consultar Estado de Orden</h3>
-            <p class="section-subtitle">Introduce tu código asignado para verificar el estado de tu servicio.</p>
-            <div class="search-box">
-                <input type="text" id="inputBuscarOrden" placeholder="Ej. ORD-172849">
-                <button id="btnBuscarOrden" class="btn-secondary">Consultar</button>
+        <!-- Tarjeta de Limpieza Profunda -->
+        <section class="servicio-card">
+            <div class="icono-servicio">
+                <i class="fas fa-spray-can"></i>
             </div>
-            <div id="detalleOrden" class="order-details hidden"></div>
+            <div class="servicio-header">
+                <h2>LIMPIEZA PROFUNDA</h2>
+                <div class="precio">$70.000</div>
+                <div class="nota">Para una presentación impecable</div>
+            </div>
+            <ul class="checklist">
+                 <!-- Aquí podrías agregar una checklist específica para este servicio si lo deseas, aunque en la imagen no aparece listada explicitamente. Usaremos los mismos puntos genéricos por coherencia de diseño. -->
+                <li><i class="fas fa-check"></i> Limpieza detallada de todas las áreas</li>
+                <li><i class="fas fa-check"></i> Desinfección profunda de superficies</li>
+                <li><i class="fas fa-check"></i> Limpieza de electrodomésticos por dentro y fuera</li>
+                <li><i class="fas fa-check"></i> Limpieza de vidrios y ventanas</li>
+                <li><i class="fas fa-check"></i> Aspirado y lavado de alfombras (si aplica)</li>
+                <li><i class="fas fa-check"></i> Eliminación de polvo acumulado</li>
+            </ul>
+            <div class="card-footer">
+                <a href="#" class="btn-reservar" onclick="abrirFormulario('Limpieza Profunda', '70000')">Reservar Ahora</a>
+                <div class="airbnb-badge">
+                     <!-- Puedes dejar este espacio en blanco o poner un icono relacionado con el detalle, como un sello -->
+                </div>
+            </div>
         </section>
     </main>
 
-    <footer class="main-footer">
-        <p>&copy; 2026 BrillaClean - Todos los derechos reservados.</p>
+    <!-- Sección de iconos inferiores -->
+    <section class="iconos-inferiores">
+        <div class="icono-box">
+            <i class="fas fa-award"></i>
+            <h4>Puntualidad</h4>
+            <p>Nos comprometemos con los tiempos de entrega para que tu propiedad esté siempre lista.</p>
+        </div>
+        <div class="icono-box">
+            <i class="fas fa-shield-alt"></i>
+            <h4>Confianza</h4>
+            <p>Nuestro personal es de confianza y está calificado para cuidar tu propiedad.</p>
+        </div>
+        <div class="icono-box">
+            <i class="fas fa-leaf"></i>
+            <h4>Productos de calidad</h4>
+            <p>Utilizamos productos efectivos y respetuosos con el medio ambiente.</p>
+        </div>
+        <div class="icono-box">
+            <i class="fas fa-handshake"></i>
+            <h4>Ideal para corredores</h4>
+            <p>Simplificamos la gestión de propiedades para anfitriones y corredores.</p>
+        </div>
+    </section>
+
+    <!-- Footer de contacto -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-item">
+                <i class="fas fa-phone-alt"></i>
+                <div>
+                    <h3>Teléfono de contacto</h3>
+                    <p>+56 9 5968 8129</p>
+                </div>
+            </div>
+            <div class="footer-item">
+                <i class="fas fa-calendar-alt"></i>
+                <div>
+                    <h3>Horario</h3>
+                    <p>Lunes a Sábado 9:00 a 18:00 horas</p>
+                </div>
+            </div>
+             <div class="footer-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                    <h3>Ubicación</h3>
+                    <p>La Serena y Coquimbo | Servicio a domicilio</p>
+                </div>
+            </div>
+        </div>
+        <p class="footer-tagline">Limpieza que suma valor ♡</p>
     </footer>
 
-    <script src="js/main.js"></script>
+    <!-- FORMULARIO DE RESERVA (OCULTO) -->
+    <div id="reservaFormContainer">
+        <div class="reserva-form-box">
+            <span class="btn-cerrar-form" onclick="cerrarFormulario()"><i class="fas fa-times"></i></span>
+            <h3>Solicitar Reserva</h3>
+            <form id="formSolicitud">
+                <input type="text" id="nombreCliente" placeholder="Tu Nombre Completo" required>
+                <input type="tel" id="telefonoCliente" placeholder="Tu Teléfono (ej. +56912345678)" required>
+                 <input type="email" id="emailCliente" placeholder="Tu Correo Electrónico (opcional)">
+                <input type="date" id="fechaServicio" required>
+                <input type="text" id="direccionPropiedad" placeholder="Dirección de la Propiedad" required>
+                <select id="tipoServicioSeleccionado" disabled>
+                    <option value="Limpieza Entre Huéspedes">Limpieza Entre Huéspedes ($35.000)</option>
+                    <option value="Limpieza Profunda">Limpieza Profunda ($70.000)</option>
+                </select>
+                <button type="submit">Enviar Solicitud de Reserva</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- --- INTEGRACIÓN CON FIREBASE (LA MISMA QUE USAMOS AYER) --- -->
+    <!-- Scripts de Firebase Compat -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Configuración exacta de tu panel de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
+            authDomain: "brillaclean-b9226.firebaseapp.com",
+            projectId: "brillaclean-b9226",
+            storageBucket: "brillaclean-b9226.firebasestorage.app",
+            messagingSenderId: "509006775314",
+            appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb",
+            measurementId: "G-LCWWKB1Q7B"
+        };
+
+        // Inicializar Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        // Funciones para manejar el formulario de reserva
+        function abrirFormulario(nombreServicio, precio) {
+            const container = document.getElementById("reservaFormContainer");
+            container.style.display = "flex";
+
+            // Autoseleccionar el servicio en el formulario
+            const select = document.getElementById("tipoServicioSeleccionado");
+            select.value = nombreServicio;
+
+            // Guardar el nombre y precio del servicio en un campo oculto para el envío
+            // (Opcionalmente, podrías tener campos hidden para esto)
+        }
+
+        function cerrarFormulario() {
+            document.getElementById("reservaFormContainer").style.display = "none";
+        }
+
+        // Enviar la reserva a Firestore
+        const formSolicitud = document.getElementById("formSolicitud");
+        if(formSolicitud) {
+            formSolicitud.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                // Capturar los valores del formulario
+                const nombre = document.getElementById("nombreCliente").value;
+                const telefono = document.getElementById("telefonoCliente").value;
+                 const email = document.getElementById("emailCliente").value;
+                const fecha = document.getElementById("fechaServicio").value;
+                const direccion = document.getElementById("direccionPropiedad").value;
+                const servicio = document.getElementById("tipoServicioSeleccionado").value;
+
+                // Crear un objeto con la nueva orden
+                const nuevaOrden = {
+                    nombre: nombre,
+                    telefono: telefono,
+                    email: email,
+                    fecha: fecha,
+                    direccion: direccion,
+                    tipoServicio: servicio,
+                    estado: "Pendiente", // Estado inicial por defecto
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp() // Hora de creación del servidor
+                };
+
+                // Guardar en la colección "ordenes" de Firestore
+                db.collection("ordenes").add(nuevaOrden)
+                    .then((docRef) => {
+                        console.log("Orden guardada con ID: ", docRef.id);
+                        alert("¡Tu solicitud de reserva se ha enviado correctamente! Nos pondremos en contacto contigo a la brevedad.");
+                        formSolicitud.reset();
+                        cerrarFormulario();
+                    })
+                    .catch((error) => {
+                        console.error("Error al guardar la orden: ", error);
+                        alert("Hubo un error al enviar la solicitud. Por favor, inténtalo de nuevo o contáctanos directamente por teléfono.");
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
