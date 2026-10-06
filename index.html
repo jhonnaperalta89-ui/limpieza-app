@@ -442,6 +442,18 @@
         </div>
     </section>
 
+    <!-- BARRA DE BÚSQUEDA DE ORDEN (UBICADA AL FINAL ANTES DEL FOOTER) -->
+    <section style="max-width: 600px; margin: 40px auto; padding: 0 20px; text-align: center;">
+        <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <h3 style="color: #0F3B34; margin-top: 0; font-size: 1.2rem;">¿Ya reservaste? Consulta el estado de tu orden</h3>
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <input type="text" id="inputBuscarOrden" placeholder="Ingresa los dígitos de tu ID de orden..." style="flex: 1; min-width: 200px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Poppins', sans-serif;">
+                <button onclick="consultarEstadoOrden()" style="background-color: #0F3B34; color: white; border: none; padding: 0 20px; height: 45px; border-radius: 8px; font-weight: 600; cursor: pointer;">Buscar</button>
+            </div>
+            <div id="resultadoBusquedaOrden" style="margin-top: 15px; font-size: 0.95rem; text-align: left;"></div>
+        </div>
+    </section>
+
     <footer>
         <div class="footer-content">
             <div class="footer-item">
@@ -533,8 +545,9 @@
                 };
 
                 db.collection("ordenes").add(nuevaOrden)
-                    .then(() => {
-                        alert("¡Reserva enviada con éxito! Nos pondremos en contacto.");
+                    .then((docRef) => {
+                        let idCorto = docRef.id.substring(0, 8).toUpperCase();
+                        alert(`¡Reserva enviada con éxito! Tu ID de orden es #${idCorto}. Guárdalo para consultar tu estado.`);
                         formSolicitud.reset();
                         cerrarFormulario();
                     })
@@ -542,6 +555,55 @@
                         alert("Error al enviar la reserva: " + error.message);
                     });
             });
+        }
+
+        // Función para consultar el estado de la orden por ID
+        async function consultarEstadoOrden() {
+            const codigoBuscado = document.getElementById("inputBuscarOrden").value.trim().toUpperCase();
+            const resultadoDiv = document.getElementById("resultadoBusquedaOrden");
+
+            if (!codigoBuscado) {
+                resultadoDiv.innerHTML = `<span style="color: #d9534f;">Por favor, ingresa un código de orden válido.</span>`;
+                return;
+            }
+
+            resultadoDiv.innerHTML = "Buscando orden...";
+
+            try {
+                const snapshot = await db.collection("ordenes").get();
+                let encontrada = false;
+
+                snapshot.forEach((doc) => {
+                    let idDoc = doc.id.toUpperCase();
+                    if (idDoc.includes(codigoBuscado)) {
+                        let orden = doc.data();
+                        let idCorto = doc.id.substring(0, 8).toUpperCase();
+                        encontrada = true;
+                        
+                        let colorEstado = "#856404";
+                        let fondoEstado = "#fff3cd";
+                        if(orden.estado === "Confirmado") { colorEstado = "#155724"; fondoEstado = "#d4edda"; }
+                        if(orden.estado === "Rechazado") { colorEstado = "#721c24"; fondoEstado = "#f8d7da"; }
+
+                        resultadoDiv.innerHTML = `
+                            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; border-left: 4px solid #0F3B34; margin-top: 10px;">
+                                <strong>Orden: #${idCorto}</strong><br>
+                                <strong>Servicio:</strong> ${orden.tipoServicio || 'Limpieza'}<br>
+                                <strong>Fecha:</strong> ${orden.fecha || 'N/A'}<br>
+                                <strong>Estado:</strong> <span style="background:${fondoEstado}; color:${colorEstado}; padding: 3px 8px; border-radius: 10px; font-weight:600; font-size:0.85rem;">${orden.estado || 'Pendiente'}</span>
+                            </div>
+                        `;
+                    }
+                });
+
+                if (!encontrada) {
+                    resultadoDiv.innerHTML = `<span style="color: #666; display: block; margin-top: 10px;">No se encontró ninguna orden con ese código. Verifica e inténtalo de nuevo.</span>`;
+                }
+
+            } catch (error) {
+                console.error("Error al buscar orden:", error);
+                resultadoDiv.innerHTML = `<span style="color: #d9534f; display: block; margin-top: 10px;">Ocurrió un error al realizar la búsqueda.</span>`;
+            }
         }
     </script>
 </body>
