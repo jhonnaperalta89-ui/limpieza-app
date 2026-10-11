@@ -235,7 +235,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <script>
-        // Configuración real de Firebase integrada
+        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyD... (tu apikey real)", 
             authDomain: "limpieza-app-xyz.firebaseapp.com",
@@ -263,7 +263,7 @@
                 document.getElementById("login-overlay").style.display = "none";
                 document.getElementById("panel-principal").style.display = "block";
                 sessionStorage.setItem("adminLogueado", "true");
-                cargarTodo();
+                cargarTodasLasReservas();
             } else {
                 errorDiv.style.display = "block";
             }
@@ -274,107 +274,87 @@
             if (sessionStorage.getItem("adminLogueado") === "true") {
                 document.getElementById("login-overlay").style.display = "none";
                 document.getElementById("panel-principal").style.display = "block";
-                cargarTodo();
+                cargarTodasLasReservas();
             }
         });
 
-        // 1. Cargar Pendientes (Aceptar / Rechazar)
-        function cargarReservasPendientes() {
+        // Carga global de reservas clasificadas por JavaScript (Sin depender de índices de Firestore)
+        function cargarTodasLasReservas() {
             const contenedorPendientes = document.getElementById("lista-pendientes");
-            if (!contenedorPendientes) return;
-
-            db.collection("reservas").where("estado", "==", "pendiente").get().then((querySnapshot) => {
-                contenedorPendientes.innerHTML = "";
-                
-                if (querySnapshot.empty) {
-                    contenedorPendientes.innerHTML = "<p style='color: #666; font-style: italic;'>No hay solicitudes pendientes.</p>";
-                    return;
-                }
-
-                querySnapshot.forEach((doc) => {
-                    const reserva = doc.data();
-                    const idDoc = doc.id;
-
-                    const tarjeta = document.createElement("div");
-                    tarjeta.className = "reserva-card";
-                    tarjeta.innerHTML = `
-                        <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
-                        <p>📞 ${reserva.telefono || 'Sin teléfono'}</p>
-                        <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horario || ''})</p>
-                        <p>🛠️ ${reserva.servicio || 'Limpieza'}</p>
-                        <div class="acciones-card">
-                            <button class="btn-aprobar" onclick="actualizarEstado('${idDoc}', 'confirmada')">Aceptar</button>
-                            <button class="btn-rechazar" onclick="actualizarEstado('${idDoc}', 'rechazada')">Rechazar</button>
-                        </div>
-                    `;
-                    contenedorPendientes.appendChild(tarjeta);
-                });
-            });
-        }
-
-        // 2. Cargar Confirmadas (Con opción de eliminar)
-        function cargarReservasConfirmadas() {
             const contenedorConfirmadas = document.getElementById("lista-confirmadas");
-            if (!contenedorConfirmadas) return;
-
-            db.collection("reservas").where("estado", "==", "confirmada").get().then((querySnapshot) => {
-                contenedorConfirmadas.innerHTML = "";
-                
-                if (querySnapshot.empty) {
-                    contenedorConfirmadas.innerHTML = "<p style='color: #666; font-style: italic;'>No hay reservas confirmadas.</p>";
-                    return;
-                }
-
-                querySnapshot.forEach((doc) => {
-                    const reserva = doc.data();
-                    const idDoc = doc.id;
-
-                    const tarjeta = document.createElement("div");
-                    tarjeta.className = "reserva-card";
-                    tarjeta.innerHTML = `
-                        <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
-                        <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horario || ''})</p>
-                        <p>🛠️ ${reserva.servicio || 'Limpieza'}</p>
-                        <button class="btn-eliminar-admin" onclick="eliminarReserva('${idDoc}')">Eliminar</button>
-                    `;
-                    contenedorConfirmadas.appendChild(tarjeta);
-                });
-            });
-        }
-
-        // 3. Cargar Rechazadas
-        function cargarReservasRechazadas() {
             const contenedorRechazadas = document.getElementById("lista-rechazadas");
-            if (!contenedorRechazadas) return;
 
-            db.collection("reservas").where("estado", "==", "rechazada").get().then((querySnapshot) => {
+            if (contenedorPendientes) contenedorPendientes.innerHTML = "<p style='color: #666;'>Cargando...</p>";
+            if (contenedorConfirmadas) contenedorConfirmadas.innerHTML = "<p style='color: #666;'>Cargando...</p>";
+            if (contenedorRechazadas) contenedorRechazadas.innerHTML = "<p style='color: #666;'>Cargando...</p>";
+
+            db.collection("reservas").get().then((querySnapshot) => {
+                contenedorPendientes.innerHTML = "";
+                contenedorConfirmadas.innerHTML = "";
                 contenedorRechazadas.innerHTML = "";
-                
-                if (querySnapshot.empty) {
-                    contenedorRechazadas.innerHTML = "<p style='color: #666; font-style: italic;'>Sin registros rechazados.</p>";
-                    return;
-                }
+
+                let hayPendientes = false;
+                let hayConfirmadas = false;
+                let hayRechazadas = false;
 
                 querySnapshot.forEach((doc) => {
                     const reserva = doc.data();
                     const idDoc = doc.id;
+                    const estado = reserva.estado ? reserva.estado.toLowerCase().trim() : "pendiente";
 
-                    const tarjeta = document.createElement("div");
-                    tarjeta.className = "reserva-card";
-                    tarjeta.innerHTML = `
-                        <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
-                        <p>📅 ${reserva.fecha || 'Sin fecha'}</p>
-                        <button class="btn-eliminar-admin" onclick="eliminarReserva('${idDoc}')">Eliminar</button>
-                    `;
-                    contenedorRechazadas.appendChild(tarjeta);
+                    if (estado === "pendiente") {
+                        hayPendientes = true;
+                        const tarjeta = document.createElement("div");
+                        tarjeta.className = "reserva-card";
+                        tarjeta.innerHTML = `
+                            <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
+                            <p>📞 ${reserva.telefono || 'Sin teléfono'}</p>
+                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horario || ''})</p>
+                            <p>🛠️ ${reserva.servicio || 'Limpieza'}</p>
+                            <div class="acciones-card">
+                                <button class="btn-aprobar" onclick="actualizarEstado('${idDoc}', 'confirmada')">Aceptar</button>
+                                <button class="btn-rechazar" onclick="actualizarEstado('${idDoc}', 'rechazada')">Rechazar</button>
+                            </div>
+                        `;
+                        contenedorPendientes.appendChild(tarjeta);
+                    } else if (estado === "confirmada") {
+                        hayConfirmadas = true;
+                        const tarjeta = document.createElement("div");
+                        tarjeta.className = "reserva-card";
+                        tarjeta.innerHTML = `
+                            <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
+                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horario || ''})</p>
+                            <p>🛠️ ${reserva.servicio || 'Limpieza'}</p>
+                            <button class="btn-eliminar-admin" onclick="eliminarReserva('${idDoc}')">Eliminar</button>
+                        `;
+                        contenedorConfirmadas.appendChild(tarjeta);
+                    } else if (estado === "rechazada") {
+                        hayRechazadas = true;
+                        const tarjeta = document.createElement("div");
+                        tarjeta.className = "reserva-card";
+                        tarjeta.innerHTML = `
+                            <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
+                            <p>📅 ${reserva.fecha || 'Sin fecha'}</p>
+                            <button class="btn-eliminar-admin" onclick="eliminarReserva('${idDoc}')">Eliminar</button>
+                        `;
+                        contenedorRechazadas.appendChild(tarjeta);
+                    }
                 });
+
+                if (!hayPendientes) contenedorPendientes.innerHTML = "<p style='color: #666; font-style: italic;'>No hay solicitudes pendientes.</p>";
+                if (!hayConfirmadas) contenedorConfirmadas.innerHTML = "<p style='color: #666; font-style: italic;'>No hay reservas confirmadas.</p>";
+                if (!hayRechazadas) contenedorRechazadas.innerHTML = "<p style='color: #666; font-style: italic;'>Sin registros rechazados.</p>";
+
+            }).catch((error) => {
+                console.error("Error al cargar reservas: ", error);
+                alert("Error al cargar los datos de la base de datos.");
             });
         }
 
         // Funciones de acción
         function actualizarEstado(idDoc, nuevoEstado) {
             db.collection("reservas").doc(idDoc).update({ estado: nuevoEstado }).then(() => {
-                cargarTodo();
+                cargarTodasLasReservas();
             }).catch((error) => {
                 alert("Error al actualizar: " + error.message);
             });
@@ -383,17 +363,11 @@
         function eliminarReserva(idDoc) {
             if (confirm("¿Estás seguro de que deseas eliminar este registro?")) {
                 db.collection("reservas").doc(idDoc).delete().then(() => {
-                    cargarTodo();
+                    cargarTodasLasReservas();
                 }).catch((error) => {
                     alert("Error al eliminar: " + error.message);
                 });
             }
-        }
-
-        function cargarTodo() {
-            cargarReservasPendientes();
-            cargarReservasConfirmadas();
-            cargarReservasRechazadas();
         }
 
         function cerrarSesion() {
