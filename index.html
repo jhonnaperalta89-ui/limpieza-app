@@ -160,19 +160,20 @@
         <a href="admin.html">Acceso Administrador</a>
     </div>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs Compat -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // Configuración de Firebase (asegúrate de mantener aquí tu configuración original)
+        // Configuración de BrillaClean
         const firebaseConfig = {
-            apiKey: "TU_API_KEY", 
-            authDomain: "tu-proyecto.firebaseapp.com",
-            projectId: "tu-proyecto",
-            storageBucket: "tu-proyecto.appspot.com",
-            messagingSenderId: "xxxx",
-            appId: "xxxx"
+            apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
+            authDomain: "brillaclean-b9226.firebaseapp.com",
+            projectId: "brillaclean-b9226",
+            storageBucket: "brillaclean-b9226.firebasestorage.app",
+            messagingSenderId: "509006775314",
+            appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb",
+            measurementId: "G-LCWWKB1Q7B"
         };
         
         if (!firebase.apps.length) {
@@ -207,7 +208,7 @@
                 document.getElementById("texto-codigo").innerText = codigoUnico;
                 document.getElementById("box-codigo").style.display = "block";
                 document.getElementById("form-reserva").reset();
-                alert("¡Reserva registrada con éxito!");
+                alert("¡Reserva registrada con éxito en Firebase!");
             }).catch((error) => {
                 alert("Error al registrar la reserva: " + error.message);
             });
