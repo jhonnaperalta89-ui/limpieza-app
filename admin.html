@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus Clean Corporation | Panel de Administración</title>
-    <!-- Estilos generales y del panel -->
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,6 +12,65 @@
             padding: 20px;
             color: #333;
         }
+        /* Pantalla de Login */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(27, 67, 50, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-card h2 {
+            margin-top: 0;
+            color: #1b4332;
+            margin-bottom: 20px;
+        }
+        .login-card input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1b4332;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+        .login-card button:hover {
+            background-color: #2d6a4f;
+        }
+        .error-msg {
+            color: #d9534f;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Panel Principal */
         .admin-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -20,6 +78,7 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: none; /* Oculto hasta iniciar sesión */
         }
         .admin-header {
             display: flex;
@@ -80,6 +139,11 @@
             margin: 6px 0;
             font-size: 14px;
         }
+        .acciones-card {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
         .btn-aprobar {
             background-color: #28a745;
             color: white;
@@ -87,15 +151,18 @@
             padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
+            font-weight: bold;
+            flex: 1;
         }
         .btn-rechazar {
-            background-color: #dc3545;
-            color: white;
+            background-color: #ffc107;
+            color: #333;
             border: none;
             padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
-            margin-left: 5px;
+            font-weight: bold;
+            flex: 1;
         }
         .btn-eliminar-admin {
             background-color: #d9534f;
@@ -115,7 +182,19 @@
 </head>
 <body>
 
-    <div class="admin-container">
+    <!-- CAPA DE ACCESO (LOGIN) -->
+    <div id="login-overlay">
+        <div class="login-card">
+            <h2>Acceso Administrador</h2>
+            <input type="email" id="login-email" placeholder="Correo electrónico" required>
+            <input type="password" id="login-pass" placeholder="Contraseña" required>
+            <button onclick="intentarLogin()">Ingresar</button>
+            <div id="login-error" class="error-msg">Correo o contraseña incorrectos.</div>
+        </div>
+    </div>
+
+    <!-- PANEL DE ADMINISTRACIÓN -->
+    <div class="admin-container" id="panel-principal">
         <div class="admin-header">
             <h1>Panel de Administración - Nexus Clean Corporation</h1>
             <div class="admin-actions">
@@ -129,21 +208,21 @@
             <div class="panel-section">
                 <h3>⏳ Pendientes por Aprobar</h3>
                 <div id="lista-pendientes">
-                    <!-- Se llena dinámicamente con JS -->
+                    <p style="color: #666; font-style: italic;">Cargando pendientes...</p>
                 </div>
             </div>
 
-            <!-- Sección: Historial de Confirmadas (Modificada sin etiqueta Permanente y con opción de borrar) -->
+            <!-- Sección: Historial de Confirmadas -->
             <div class="panel-section">
                 <h3>✅ Historial de Confirmadas</h3>
                 <div id="lista-confirmadas">
-                    <!-- Se llena dinámicamente con JS -->
+                    <p style="color: #666; font-style: italic;">Cargando confirmadas...</p>
                 </div>
             </div>
 
             <!-- Sección: Historial Rechazadas -->
             <div class="panel-section">
-                <h3>❌ Historial Rechazadas (Auto 30 días + Borrado)</h3>
+                <h3>❌ Historial Rechazadas</h3>
                 <div id="lista-rechazadas">
                     <p style="color: #666; font-style: italic;">Sin registros rechazados.</p>
                 </div>
@@ -151,20 +230,92 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs (Asegúrate de mantener tus versiones o configuración previa) -->
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore-compat.js"></script>
+    <!-- Firebase SDKs versión compatible -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <script>
-        // Configuración de Firebase (Asegúrate de tener tu inicialización correcta o la referencia a tu script de firebase)
-        // const firebaseConfig = { ... };
-        // firebase.initializeApp(firebaseConfig);
-        // const db = firebase.firestore();
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY", 
+            authDomain: "tu-proyecto.firebaseapp.com",
+            projectId: "tu-proyecto",
+            storageBucket: "tu-proyecto.appspot.com",
+            messagingSenderId: "xxxx",
+            appId: "xxxx"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
 
-        // Función para cargar las reservas confirmadas y aplicar la opción de eliminar
+        // Credenciales solicitadas
+        const ADMIN_EMAIL_VALIDO = "jhonnaperalta15gmail.com";
+        const ADMIN_PASS_VALIDO = "Catalina1208";
+
+        function intentarLogin() {
+            const emailInput = document.getElementById("login-email").value.trim();
+            const passInput = document.getElementById("login-pass").value.trim();
+            const errorDiv = document.getElementById("login-error");
+
+            if (emailInput === ADMIN_EMAIL_VALIDO && passInput === ADMIN_PASS_VALIDO) {
+                document.getElementById("login-overlay").style.display = "none";
+                document.getElementById("panel-principal").style.display = "block";
+                sessionStorage.setItem("adminLogueado", "true");
+                cargarTodo();
+            } else {
+                errorDiv.style.display = "block";
+            }
+        }
+
+        // Verificar sesión activa al recargar
+        window.addEventListener("DOMContentLoaded", () => {
+            if (sessionStorage.getItem("adminLogueado") === "true") {
+                document.getElementById("login-overlay").style.display = "none";
+                document.getElementById("panel-principal").style.display = "block";
+                cargarTodo();
+            }
+        });
+
+        // 1. Cargar Pendientes (Aceptar / Rechazar)
+        function cargarReservasPendientes() {
+            const contenedorPendientes = document.getElementById("lista-pendientes");
+            if (!contenedorPendientes) return;
+
+            db.collection("reservas").where("estado", "==", "pendiente").get().then((querySnapshot) => {
+                contenedorPendientes.innerHTML = "";
+                
+                if (querySnapshot.empty) {
+                    contenedorPendientes.innerHTML = "<p style='color: #666; font-style: italic;'>No hay solicitudes pendientes.</p>";
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const reserva = doc.data();
+                    const idDoc = doc.id;
+
+                    const tarjeta = document.createElement("div");
+                    tarjeta.className = "reserva-card";
+                    tarjeta.innerHTML = `
+                        <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
+                        <p>📞 ${reserva.telefono || 'Sin teléfono'}</p>
+                        <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horario || ''})</p>
+                        <p>🛠️ ${reserva.servicio || 'Limpieza'}</p>
+                        <div class="acciones-card">
+                            <button class="btn-aprobar" onclick="actualizarEstado('${idDoc}', 'confirmada')">Aceptar</button>
+                            <button class="btn-rechazar" onclick="actualizarEstado('${idDoc}', 'rechazada')">Rechazar</button>
+                        </div>
+                    `;
+                    contenedorPendientes.appendChild(tarjeta);
+                });
+            });
+        }
+
+        // 2. Cargar Confirmadas (Con opción de eliminar)
         function cargarReservasConfirmadas() {
             const contenedorConfirmadas = document.getElementById("lista-confirmadas");
-            contenedorConfirmadas.innerHTML = "<p style='color: #666;'>Cargando reservas...</p>";
+            if (!contenedorConfirmadas) return;
 
             db.collection("reservas").where("estado", "==", "confirmada").get().then((querySnapshot) => {
                 contenedorConfirmadas.innerHTML = "";
@@ -188,33 +339,67 @@
                     `;
                     contenedorConfirmadas.appendChild(tarjeta);
                 });
-            }).catch((error) => {
-                console.error("Error al cargar confirmadas: ", error);
-                contenedorConfirmadas.innerHTML = "<p style='color: red;'>Error al cargar el historial.</p>";
             });
         }
 
-        // Función para eliminar un registro del historial de confirmadas
+        // 3. Cargar Rechazadas
+        function cargarReservasRechazadas() {
+            const contenedorRechazadas = document.getElementById("lista-rechazadas");
+            if (!contenedorRechazadas) return;
+
+            db.collection("reservas").where("estado", "==", "rechazada").get().then((querySnapshot) => {
+                contenedorRechazadas.innerHTML = "";
+                
+                if (querySnapshot.empty) {
+                    contenedorRechazadas.innerHTML = "<p style='color: #666; font-style: italic;'>Sin registros rechazados.</p>";
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const reserva = doc.data();
+                    const idDoc = doc.id;
+
+                    const tarjeta = document.createElement("div");
+                    tarjeta.className = "reserva-card";
+                    tarjeta.innerHTML = `
+                        <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
+                        <p>📅 ${reserva.fecha || 'Sin fecha'}</p>
+                        <button class="btn-eliminar-admin" onclick="eliminarReserva('${idDoc}')">Eliminar</button>
+                    `;
+                    contenedorRechazadas.appendChild(tarjeta);
+                });
+            });
+        }
+
+        // Funciones de acción
+        function actualizarEstado(idDoc, nuevoEstado) {
+            db.collection("reservas").doc(idDoc).update({ estado: nuevoEstado }).then(() => {
+                cargarTodo();
+            }).catch((error) => {
+                alert("Error al actualizar: " + error.message);
+            });
+        }
+
         function eliminarReserva(idDoc) {
-            if (confirm("¿Estás seguro de que deseas eliminar este registro del historial?")) {
+            if (confirm("¿Estás seguro de que deseas eliminar este registro?")) {
                 db.collection("reservas").doc(idDoc).delete().then(() => {
-                    console.log("Registro eliminado correctamente");
-                    cargarReservasConfirmadas(); // Recarga la lista en pantalla
+                    cargarTodo();
                 }).catch((error) => {
-                    console.error("Error al eliminar el registro: ", error);
-                    alert("Hubo un error al intentar eliminar el registro.");
+                    alert("Error al eliminar: " + error.message);
                 });
             }
         }
 
-        function cerrarSesion() {
-            window.location.href = 'index.html';
+        function cargarTodo() {
+            cargarReservasPendientes();
+            cargarReservasConfirmadas();
+            cargarReservasRechazadas();
         }
 
-        // Ejecutar al cargar la página
-        document.addEventListener("DOMContentLoaded", () => {
-            cargarReservasConfirmadas();
-        });
+        function cerrarSesion() {
+            sessionStorage.removeItem("adminLogueado");
+            location.reload();
+        }
     </script>
 </body>
 </html>
