@@ -3,273 +3,795 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Clean Corporation | Servicios de Limpieza</title>
+    <title>BrillaClean - Servicios de Limpieza</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --color-principal: #0F3B34;
+            --color-secundario: #A4977E;
+            --color-fondo: #F8F7F4;
+            --fuente-principal: 'Poppins', sans-serif;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--fuente-principal);
+            background-color: var(--color-fondo);
+            color: #333;
             margin: 0;
             padding: 0;
-            /* Fondo de playa elegante y profesional */
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
-            background-size: cover;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            line-height: 1.6;
         }
-        .main-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 500px;
-            color: #333;
-            margin: 20px;
-            box-sizing: border-box;
-        }
-        h1, h2 {
-            color: #1b4332;
+
+        header {
+            background: linear-gradient(to bottom right, #E8E5DF, var(--color-fondo));
+            padding: 30px 20px;
             text-align: center;
-            margin-top: 0;
+            border-bottom: 1px solid #ddd;
         }
-        .form-group {
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .house-icon-box {
+            background-color: var(--color-principal);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1.5rem;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--color-principal);
+            text-transform: uppercase;
+            text-align: left;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 1rem;
+            color: #555;
+            text-align: left;
+        }
+
+        .tagline-box {
+            background-color: var(--color-secundario);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            main { grid-template-columns: 1fr; }
+            .header-content { justify-content: center; text-align: center; }
+            header h1, header p { text-align: center; }
+        }
+
+        .servicio-card {
+            background-color: white;
+            padding: 40px 30px 30px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+            margin-top: 30px;
+        }
+
+        .icono-servicio {
+            position: absolute;
+            top: -35px;
+            left: 30px;
+            width: 70px;
+            height: 70px;
+            background-color: var(--color-principal);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            color: white;
+            border: 4px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .servicio-header h2 {
+            margin: 0 0 5px 0;
+            font-size: 1.5rem;
+            color: var(--color-principal);
+            font-weight: 700;
+        }
+
+        .precio {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-principal);
+            margin: 5px 0;
+        }
+
+        .nota {
+            color: #777;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .checklist li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #444;
+            font-size: 0.95rem;
+        }
+
+        .checklist li i {
+            color: var(--color-principal);
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-reservar {
+            background-color: var(--color-principal);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-reservar:hover { background-color: #09231f; }
+
+        .airbnb-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-align: right;
+        }
+        .airbnb-badge i { color: #FF5A5F; font-size: 1.4rem; }
+
+        .iconos-inferiores {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .iconos-inferiores { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 500px) {
+            .iconos-inferiores { grid-template-columns: 1fr; }
+        }
+
+        .icono-box {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        }
+
+        .icono-box i {
+            font-size: 2.2rem;
+            color: var(--color-secundario);
             margin-bottom: 15px;
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 14px;
+
+        .icono-box h4 {
+            margin: 0 0 8px 0;
+            font-size: 1.05rem;
+            color: var(--color-principal);
+            font-weight: 700;
         }
-        input, select, textarea {
+
+        .icono-box p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        footer {
+            background-color: var(--color-principal);
+            color: white;
+            padding: 40px 20px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-item i {
+            font-size: 1.5rem;
+            color: var(--color-secundario);
+        }
+
+        .footer-item h3 {
+            margin: 0;
+            font-size: 1.05rem;
+        }
+
+        .footer-item p {
+            margin: 3px 0 0 0;
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+
+        .footer-tagline {
+            text-align: center;
+            margin-top: 30px;
+            font-style: italic;
+            font-size: 1rem;
+            color: #ccc;
+        }
+
+        /* Modal Formulario */
+        #reservaFormContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .reserva-form-box {
+            background-color: white;
+            padding: 25px;
+            border-radius: 20px;
+            width: 420px;
+            max-width: 90%;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .reserva-form-box h3 { color: var(--color-principal); margin-top: 0; }
+        .reserva-form-box input, select, textarea {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             box-sizing: border-box;
-            font-size: 14px;
+            font-family: var(--fuente-principal);
+            font-size: 0.9rem;
         }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #1b4332;
+
+        .reserva-form-box label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-principal);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .btn-cerrar-form {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            color: #999;
+            font-size: 1.2rem;
+        }
+
+        .reserva-form-box button[type="submit"] {
+            background-color: var(--color-principal);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background-color: #2d6a4f;
-        }
-        .section-divider {
-            margin: 30px 0 20px 0;
-            border-top: 2px solid #eee;
-            padding-top: 20px;
-        }
-        .resultado-estado {
-            margin-top: 15px;
             padding: 12px;
-            border-radius: 6px;
-            background: #f1f3f5;
-            font-size: 14px;
-            display: none;
-        }
-        .codigo-copiar-box {
-            background: #e8f5e9;
-            border: 1px dashed #2e7d32;
-            padding: 10px;
-            border-radius: 6px;
-            text-align: center;
-            margin-top: 15px;
-            display: none;
-        }
-        .btn-copiar {
-            background-color: #2e7d32;
-            margin-top: 8px;
-            padding: 8px;
-            font-size: 14px;
-        }
-        .admin-link {
-            text-align: center;
-            margin-top: 15px;
-        }
-        .admin-link a {
-            color: #fff;
-            text-decoration: underline;
-            font-size: 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="main-container">
-        <h1>Nexus Clean Corporation</h1>
-        <p style="text-align: center; color: #666; font-size: 14px;">Reserva tu servicio de limpieza profesional</p>
+    <header>
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="house-icon-box">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div>
+                    <h1>SERVICIOS DE LIMPIEZA</h1>
+                    <p>Especial para Corredores de Propiedades y Arriendos de Airbnb</p>
+                </div>
+            </div>
+            <div class="tagline-box">
+                Tu propiedad en buenas manos ♡
+            </div>
+        </div>
+    </header>
 
-        <!-- Formulario de Reserva -->
-        <form id="form-reserva" onsubmit="registrarReserva(event)">
-            <div class="form-group">
-                <label for="nombre">Nombre Completo:</label>
-                <input type="text" id="nombre" required placeholder="Ej. Juan Pérez">
+    <main>
+        <!-- Tarjeta 1 -->
+        <section class="servicio-card">
+            <div class="icono-servicio">
+                <i class="fas fa-broom"></i>
             </div>
-            <div class="form-group">
-                <label for="telefono">Teléfono:</label>
-                <input type="tel" id="telefono" required placeholder="Ej. +56912345678">
+            <div class="servicio-header">
+                <h2>LIMPIEZA ENTRE HUÉSPEDES</h2>
+                <div class="precio">$35.000</div>
+                <div class="nota">Servicio rápido y eficiente</div>
             </div>
-            <div class="form-group">
-                <label for="servicio">Tipo de Servicio:</label>
-                <select id="servicio">
-                    <option value="Limpieza Residencial">Limpieza Residencial</option>
-                    <option value="Limpieza de Oficinas">Limpieza de Oficinas</option>
-                    <option value="Limpieza Profunda / Post-Obra">Limpieza Profunda / Post-Obra</option>
+            <ul class="checklist">
+                <li><i class="fas fa-check"></i> Cambio de sábanas</li>
+                <li><i class="fas fa-check"></i> Limpieza de habitaciones</li>
+                <li><i class="fas fa-check"></i> Limpieza de baños</li>
+                <li><i class="fas fa-check"></i> Sala, cocina, comedor y living</li>
+                <li><i class="fas fa-check"></i> Limpieza de vidrios y superficies</li>
+                <li><i class="fas fa-check"></i> Retiro de basura</li>
+                <li><i class="fas fa-check"></i> Lavado de sábanas y toallas</li>
+            </ul>
+            <div class="card-footer">
+                <a href="#" class="btn-reservar" onclick="abrirFormulario('Limpieza Entre Huéspedes')">Reservar Ahora</a>
+                <div class="airbnb-badge">
+                    <i class="fab fa-airbnb"></i>
+                    <div>ARRENDOS<br>VACACIONALES</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tarjeta 2 -->
+        <section class="servicio-card">
+            <div class="icono-servicio">
+                <i class="fas fa-spray-can-sparkles"></i>
+            </div>
+            <div class="servicio-header">
+                <h2>LIMPIEZA PROFUNDA</h2>
+                <div class="precio">$70.000</div>
+                <div class="nota">Para una presentación impecable</div>
+            </div>
+            <ul class="checklist">
+                <li><i class="fas fa-check"></i> Limpieza detallada profunda de espacios</li>
+                <li><i class="fas fa-check"></i> Desinfección completa de áreas críticas</li>
+                <li><i class="fas fa-check"></i> Limpieza a fondo de electrodomésticos</li>
+                <li><i class="fas fa-check"></i> Cristales, marcos y zócalos</li>
+                <li><i class="fas fa-check"></i> Eliminación exhaustiva de polvo y manchas</li>
+                <li><i class="fas fa-check"></i> Ideal para entrega o puesta a punto</li>
+            </ul>
+            <div class="card-footer">
+                <a href="#" class="btn-reservar" onclick="abrirFormulario('Limpieza Profunda')">Reservar Ahora</a>
+                <div class="airbnb-badge">
+                    <i class="fas fa-shield-halved" style="color: var(--color-secundario);"></i>
+                    <div>GARANTÍA<br>BRILLACLEAN</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Iconos inferiores -->
+    <section class="iconos-inferiores">
+        <div class="icono-box">
+            <i class="fas fa-award"></i>
+            <h4>Puntualidad</h4>
+            <p>Compromiso absoluto con los tiempos establecidos.</p>
+        </div>
+        <div class="icono-box">
+            <i class="fas fa-shield-alt"></i>
+            <h4>Confianza</h4>
+            <p>Personal calificado y seguro para tus espacios.</p>
+        </div>
+        <div class="icono-box">
+            <i class="fas fa-leaf"></i>
+            <h4>Productos de calidad</h4>
+            <p>Insumos profesionales que cuidan superficies.</p>
+        </div>
+        <div class="icono-box">
+            <i class="fas fa-handshake"></i>
+            <h4>Ideal para corredores</h4>
+            <p>Soporte especializado para anfitriones y propiedades.</p>
+        </div>
+    </section>
+
+    <!-- BARRA DE BÚSQUEDA DE ESTADO DE ORDEN -->
+    <section style="max-width: 600px; margin: 40px auto; padding: 0 20px; text-align: center;">
+        <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <h3 style="color: #0F3B34; margin-top: 0; font-size: 1.2rem;">¿Ya reservaste? Consulta el estado de tu orden</h3>
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <input type="text" id="inputBuscarOrden" placeholder="Ingresa los dígitos de tu ID de orden..." style="flex: 1; min-width: 200px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Poppins', sans-serif;">
+                <button onclick="consultarEstadoOrden()" style="background-color: #0F3B34; color: white; border: none; padding: 0 20px; height: 45px; border-radius: 8px; font-weight: 600; cursor: pointer;">Buscar</button>
+            </div>
+            <div id="resultadoBusquedaOrden" style="margin-top: 15px; font-size: 0.95rem; text-align: left;"></div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-item">
+                <i class="fas fa-phone-alt"></i>
+                <div>
+                    <h3>Teléfono de contacto</h3>
+                    <p>+56 9 5968 8129</p>
+                </div>
+            </div>
+            <div class="footer-item">
+                <i class="fas fa-calendar-alt"></i>
+                <div>
+                    <h3>Horario</h3>
+                    <p>Lunes a Sábado 9:00 a 18:00 hrs</p>
+                </div>
+            </div>
+            <div class="footer-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                    <h3>Ubicación</h3>
+                    <p>La Serena y Coquimbo</p>
+                </div>
+            </div>
+        </div>
+        <p class="footer-tagline">Limpieza que suma valor ♡</p>
+    </footer>
+
+    <!-- Formulario flotante de reserva -->
+    <div id="reservaFormContainer">
+        <div class="reserva-form-box">
+            <span class="btn-cerrar-form" onclick="cerrarFormulario()"><i class="fas fa-times"></i></span>
+            <h3>Solicitar Reserva</h3>
+            <form id="formSolicitud">
+                <label>Nombre Completo</label>
+                <input type="text" id="nombreCliente" placeholder="Tu Nombre Completo" required>
+                
+                <label>Teléfono</label>
+                <input type="tel" id="telefonoCliente" placeholder="Tu Teléfono (+569...)" required>
+                
+                <label>Fecha del Servicio</label>
+                <input type="date" id="fechaServicio" required>
+                
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label>Hora de Inicio</label>
+                        <input type="time" id="horaInicio" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Debe estar listo a las</label>
+                        <input type="time" id="horaFin" required>
+                    </div>
+                </div>
+
+                <label>Dirección de la Propiedad</label>
+                <input type="text" id="direccionPropiedad" placeholder="Dirección de la Propiedad" required>
+                
+                <label>Tipo de Servicio</label>
+                <select id="tipoServicioSeleccionado">
+                    <option value="Limpieza Entre Huéspedes">Limpieza Entre Huéspedes ($35.000)</option>
+                    <option value="Limpieza Profunda">Limpieza Profunda ($70.000)</option>
                 </select>
-            </div>
-            <div class="form-group">
-                <label for="fecha">Fecha y Horario:</label>
-                <input type="date" id="fecha" required style="margin-bottom: 8px;">
-                <input type="text" id="horario" placeholder="Ej. Mañana (09:00 - 13:00)" required>
-            </div>
-            <button type="submit">Solicitar Reserva</button>
-        </form>
 
-        <!-- Caja para mostrar el código generado y botón de copiar -->
-        <div id="box-codigo" class="codigo-copiar-box">
-            <p style="margin: 0 0 5px 0; font-size: 13px; color: #2e7d32;"><b>¡Reserva enviada con éxito!</b> Guarda tu código:</p>
-            <span id="texto-codigo" style="font-size: 18px; font-weight: bold; color: #1b4332;"></span>
-            <button class="btn-copiar" onclick="copiarCodigo()">Copiar Código</button>
-        </div>
+                <label>Observaciones y Cuidados Especiales</label>
+                <textarea id="observacionesCliente" rows="2" placeholder="Ej: Llave en conserjería, cuidado con el piso flotante..."></textarea>
 
-        <!-- Apartado para Consultar el Estado de la Orden -->
-        <div class="section-divider">
-            <h2>Consultar Estado</h2>
-            <div class="form-group">
-                <label for="input-consulta">Ingresa tu Código de Orden:</label>
-                <input type="text" id="input-consulta" placeholder="Ej. ABC12345">
-            </div>
-            <button type="button" onclick="consultarEstado()">Ver Estado</button>
-            <div id="resultado-consulta" class="resultado-estado"></div>
+                <button type="submit">Enviar Reserva</button>
+            </form>
         </div>
     </div>
 
-    <div class="admin-link">
-        <a href="admin.html">Acceso Administrador</a>
-    </div>
-
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase Compat SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
     <script>
-        // Configuración de Firebase (asegúrate de mantener tu objeto configurado)
         const firebaseConfig = {
-            apiKey: "TU_API_KEY", 
-            authDomain: "tu-proyecto.firebaseapp.com",
-            projectId: "tu-proyecto",
-            storageBucket: "tu-proyecto.appspot.com",
-            messagingSenderId: "xxxx",
-            appId: "xxxx"
+            apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
+            authDomain: "brillaclean-b9226.firebaseapp.com",
+            projectId: "brillaclean-b9226",
+            storageBucket: "brillaclean-b9226.firebasestorage.app",
+            messagingSenderId: "509006775314",
+            appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb",
+            measurementId: "G-LCWWKB1Q7B"
         };
-        
+
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
         const db = firebase.firestore();
 
-        let ultimoCodigoGenerado = "";
-
-        // 1. Registrar Reserva
-        function registrarReserva(e) {
-            e.preventDefault();
-            const nombre = document.getElementById("nombre").value.trim();
-            const telefono = document.getElementById("telefono").value.trim();
-            const servicio = document.getElementById("servicio").value;
-            const fecha = document.getElementById("fecha").value;
-            const horario = document.getElementById("horario").value.trim();
-
-            const codigoUnico = "NX-" + Math.floor(100000 + Math.random() * 900000);
-
-            db.collection("reservas").add({
-                nombre: nombre,
-                telefono: telefono,
-                servicio: servicio,
-                fecha: fecha,
-                horario: horario,
-                codigo: codigoUnico,
-                estado: "pendiente",
-                creado: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                ultimoCodigoGenerado = codigoUnico;
-                document.getElementById("texto-codigo").innerText = codigoUnico;
-                document.getElementById("box-codigo").style.display = "block";
-                document.getElementById("form-reserva").reset();
-                alert("¡Reserva registrada con éxito!");
-            }).catch((error) => {
-                alert("Error al registrar la reserva: " + error.message);
-            });
+        function abrirFormulario(servicio) {
+            document.getElementById("reservaFormContainer").style.display = "flex";
+            document.getElementById("tipoServicioSeleccionado").value = servicio;
         }
 
-        // 2. Copiar Código al Portapapeles
-        function copiarCodigo() {
-            if (!ultimoCodigoGenerado) return;
-            navigator.clipboard.writeText(ultimoCodigoGenerado).then(() => {
-                alert("¡Código copiado al portapapeles!");
-            }).catch(err => {
-                console.error("Error al copiar: ", err);
-            });
+        function cerrarFormulario() {
+            document.getElementById("reservaFormContainer").style.display = "none";
         }
 
-        // 3. Consultar Estado de la Orden
-        function consultarEstado() {
-            const codigoBuscado = document.getElementById("input-consulta").value.trim();
-            const contenedorResultado = document.getElementById("resultado-consulta");
+        const formSolicitud = document.getElementById("formSolicitud");
+        if(formSolicitud) {
+            formSolicitud.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const nombre = document.getElementById("nombreCliente").value;
+                const telefono = document.getElementById("telefonoCliente").value;
+                const fecha = document.getElementById("fechaServicio").value;
+                const horaInicio = document.getElementById("horaInicio").value;
+                const horaFin = document.getElementById("horaFin").value;
+                const direccion = document.getElementById("direccionPropiedad").value;
+                const tipoServicio = document.getElementById("tipoServicioSeleccionado").value;
+                const observaciones = document.getElementById("observacionesCliente").value || "Ninguna";
 
-            if (!codigoBuscado) {
-                alert("Por favor ingresa un código de orden.");
-                return;
-            }
-
-            contenedorResultado.style.display = "block";
-            contenedorResultado.innerHTML = "Buscando estado...";
-
-            db.collection("reservas").where("codigo", "==", codigoBuscado).get().then((querySnapshot) => {
-                if (querySnapshot.empty) {
-                    contenedorResultado.innerHTML = "❌ No se encontró ninguna reserva con ese código.";
+                // Validar que hora fin sea mayor a hora inicio
+                if (horaInicio >= horaFin) {
+                    alert("⚠️ La hora en la que debe estar listo debe ser posterior a la hora de inicio.");
                     return;
                 }
 
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    let estadoTexto = "";
-                    let colorEstado = "";
+                // VALIDACIÓN DE SOLAPAMIENTO DE HORARIOS EN EL MISMO DÍA (Sólo órdenes Confirmadas o Pendientes)
+                try {
+                    const snapshot = await db.collection("ordenes").where("fecha", "==", fecha).get();
+                    let haySolapamiento = false;
 
-                    if (data.estado === "pendiente") {
-                        estadoTexto = "⏳ Pendiente de revisión por el administrador";
-                        colorEstado = "#d9534f";
-                    } else if (data.estado === "confirmada") {
-                        estadoTexto = "✅ ¡Aceptada y Confirmada!";
-                        colorEstado = "#28a745";
-                    } else if (data.estado === "rechazada") {
-                        estadoTexto = "❌ Rechazada";
-                        colorEstado = "#6c757d";
+                    snapshot.forEach((doc) => {
+                        let ordenExistente = doc.data();
+                        // Verificamos si la orden está Confirmada o Pendiente
+                        if (ordenExistente.estado === "Confirmado" || ordenExistente.estado === "Pendiente") {
+                            let exInicio = ordenExistente.horaInicio;
+                            let exFin = ordenExistente.horaFin;
+
+                            if (exInicio && exFin) {
+                                // Fórmula de cruce de horarios: (InicioA < FinB) y (FinA > InicioB)
+                                if (horaInicio < exFin && horaFin > exInicio) {
+                                    haySolapamiento = true;
+                                }
+                            }
+                        }
+                    });
+
+                    if (haySolapamiento) {
+                        alert("⚠️ Lo sentimos, ya existe una reserva registrada o confirmada en ese horario para el día " + fecha + ". Por favor, selecciona otra hora.");
+                        return;
                     }
 
-                    contenedorResultado.innerHTML = `
-                        <b>Cliente:</b> ${data.nombre}<br>
-                        <b>Servicio:</b> ${data.servicio}<br>
-                        <b>Fecha:</b> ${data.fecha} (${data.horario})<br>
-                        <b>Estado Actual:</b> <span style="color: ${colorEstado}; font-weight: bold;">${estadoTexto}</span>
-                    `;
-                });
-            }).catch((error) => {
-                contenedorResultado.innerHTML = "❌ Error al consultar el estado.";
-                console.error(error);
+                } catch (error) {
+                    console.error("Error al validar horarios:", error);
+                }
+
+                const nuevaOrden = {
+                    nombre: nombre,
+                    telefono: telefono,
+                    fecha: fecha,
+                    horaInicio: horaInicio,
+                    horaFin: horaFin,
+                    direccion: direccion,
+                    tipoServicio: tipoServicio,
+                    observaciones: observaciones,
+                    estado: "Pendiente",
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                db.collection("ordenes").add(nuevaOrden)
+                    .then((docRef) => {
+                        let idCorto = docRef.id.substring(0, 8).toUpperCase();
+                        
+                        // 1. Mostrar modal de éxito con opción de copiado
+                        mostrarModalExito(idCorto);
+
+                        // 2. Enviar alerta automática a Telegram con horas y observaciones
+                        enviarAlertaTelegram(idCorto, nombre, telefono, fecha, horaInicio, horaFin, tipoServicio, direccion, observaciones);
+
+                        formSolicitud.reset();
+                        cerrarFormulario();
+                    })
+                    .catch((error) => {
+                        alert("Error al enviar la reserva: " + error.message);
+                    });
             });
+        }
+
+        // Función para enviar notificación a Telegram detallada
+        function enviarAlertaTelegram(idCorto, nombre, telefono, fecha, horaInicio, horaFin, servicio, direccion, observaciones) {
+            const botToken = "8919137259:AAFGQDeeilZZclbE7jvtwzyzyTiEQ7pR2a4"; 
+            const chatId = "6260988939";         
+
+            const mensaje = `🚨 *¡Nueva Reserva en BrillaClean!* 🧹\n\n` +
+                            `📌 *ID:* #${idCorto}\n` +
+                            `👤 *Cliente:* ${nombre}\n` +
+                            `📞 *Teléfono:* ${telefono}\n` +
+                            `🛠 *Servicio:* ${servicio}\n` +
+                            `📅 *Fecha:* ${fecha}\n` +
+                            `⏰ *Horario:* ${horaInicio} a ${horaFin} hrs\n` +
+                            `📍 *Dirección:* ${direccion}\n` +
+                            `💬 *Observaciones:* ${observaciones}`;
+
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+            fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: mensaje,
+                    parse_mode: "Markdown"
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Alerta enviada a Telegram con éxito", data);
+            })
+            .catch(error => {
+                console.error("Error al enviar alerta a Telegram:", error);
+            });
+        }
+
+        // Función para mostrar el modal de éxito con opción de copiado
+        function mostrarModalExito(codigo) {
+            let modalAnterior = document.getElementById("modalExitoReserva");
+            if(modalAnterior) modalAnterior.remove();
+
+            let modalHtml = `
+                <div id="modalExitoReserva" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 2000;">
+                    <div style="background: white; padding: 30px; border-radius: 20px; width: 380px; max-width: 90%; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.2);">
+                        <div style="font-size: 3rem; color: #28a745; margin-bottom: 10px;"><i class="fas fa-check-circle"></i></div>
+                        <h3 style="color: #0F3B34; margin-top: 0;">¡Reserva Enviada con Éxito!</h3>
+                        <p style="color: #555; font-size: 0.95rem;">Tu código de seguimiento es:</p>
+                        <div style="background: #f1f1f1; padding: 12px; border-radius: 8px; font-size: 1.3rem; font-weight: bold; letter-spacing: 1px; color: #0F3B34; margin: 15px 0;" id="textoCodigoOrden">#${codigo}</div>
+                        <button onclick="copiarCodigoOrden('${codigo}')" id="btnCopiarModal" style="background-color: #A4977E; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 10px;">
+                            <i class="fas fa-copy"></i> Copiar Código
+                        </button>
+                        <button onclick="document.getElementById('modalExitoReserva').remove()" style="background-color: #0F3B34; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%;">
+                            Entendido
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        function copiarCodigoOrden(codigo) {
+            let textoACopiar = "#" + codigo;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textoACopiar).then(() => { exitoCopiado(); }).catch(err => { copiarMetodoAlternativo(textoACopiar); });
+            } else {
+                copiarMetodoAlternativo(textoACopiar);
+            }
+        }
+
+        function copiarMetodoAlternativo(texto) {
+            let textArea = document.createElement("textarea");
+            textArea.value = texto;
+            textArea.style.position = "fixed";
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                let copiado = document.execCommand('copy');
+                if (copiado) { exitoCopiado(); } else { alert("Copia este código manualmente: " + texto); }
+            } catch (err) { alert("Copia este código manualmente: " + texto); }
+            document.body.removeChild(textArea);
+        }
+
+        function exitoCopiado() {
+            let btn = document.getElementById("btnCopiarModal");
+            if(btn) {
+                btn.innerHTML = `<i class="fas fa-check"></i> ¡Copiado al portapapeles!`;
+                btn.style.backgroundColor = "#28a745";
+                setTimeout(() => {
+                    btn.innerHTML = `<i class="fas fa-copy"></i> Copiar Código`;
+                    btn.style.backgroundColor = "#A4977E";
+                }, 3000);
+            }
+        }
+
+        async function consultarEstadoOrden() {
+            const codigoBuscado = document.getElementById("inputBuscarOrden").value.trim().toUpperCase();
+            const resultadoDiv = document.getElementById("resultadoBusquedaOrden");
+
+            if (!codigoBuscado) {
+                resultadoDiv.innerHTML = `<span style="color: #d9534f;">Por favor, ingresa un código de orden válido.</span>`;
+                return;
+            }
+
+            resultadoDiv.innerHTML = "Buscando orden...";
+
+            try {
+                const snapshot = await db.collection("ordenes").get();
+                let encontrada = false;
+
+                snapshot.forEach((doc) => {
+                    let idDoc = doc.id.toUpperCase();
+                    if (idDoc.includes(codigoBuscado)) {
+                        let orden = doc.data();
+                        let idCorto = doc.id.substring(0, 8).toUpperCase();
+                        encontrada = true;
+                        
+                        let colorEstado = "#856404";
+                        let fondoEstado = "#fff3cd";
+                        if(orden.estado === "Confirmado") { colorEstado = "#155724"; fondoEstado = "#d4edda"; }
+                        if(orden.estado === "Rechazado") { colorEstado = "#721c24"; fondoEstado = "#f8d7da"; }
+
+                        resultadoDiv.innerHTML = `
+                            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; border-left: 4px solid #0F3B34; margin-top: 10px;">
+                                <strong>Orden: #${idCorto}</strong><br>
+                                <strong>Servicio:</strong> ${orden.tipoServicio || 'Limpieza'}<br>
+                                <strong>Fecha:</strong> ${orden.fecha || 'N/A'} (${orden.horaInicio || ''} a ${orden.horaFin || ''})<br>
+                                <strong>Estado:</strong> <span style="background:${fondoEstado}; color:${colorEstado}; padding: 3px 8px; border-radius: 10px; font-weight:600; font-size:0.85rem;">${orden.estado || 'Pendiente'}</span>
+                            </div>
+                        `;
+                    }
+                });
+
+                if (!encontrada) {
+                    resultadoDiv.innerHTML = `<span style="color: #666; display: block; margin-top: 10px;">No se encontró ninguna orden con ese código. Verifica e inténtalo de nuevo.</span>`;
+                }
+
+            } catch (error) {
+                console.error("Error al buscar orden:", error);
+                resultadoDiv.innerHTML = `<span style="color: #d9534f; display: block; margin-top: 10px;">Ocurrió un error al realizar la búsqueda.</span>`;
+            }
         }
     </script>
 </body>
