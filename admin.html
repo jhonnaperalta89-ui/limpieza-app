@@ -188,7 +188,7 @@
             <h2>Acceso Administrador</h2>
             <input type="email" id="login-email" placeholder="Correo electrónico" required>
             <input type="password" id="login-pass" placeholder="Contraseña" required>
-            <button onclick="intentarLogin()">Ingresar</button>
+            <button type="button" onclick="intentarLogin()">Ingresar</button>
             <div id="login-error" class="error-msg">Correo o contraseña incorrectos.</div>
         </div>
     </div>
@@ -235,7 +235,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <script>
-        // Configuración de Firebase (asegúrate de que sea idéntica a la de tu index.html)
+        // Configuración de Firebase (asegúrate de colocar aquí tu configuración real)
         const firebaseConfig = {
             apiKey: "TU_API_KEY", 
             authDomain: "tu-proyecto.firebaseapp.com",
@@ -250,7 +250,7 @@
         }
         const db = firebase.firestore();
 
-        // Credenciales solicitadas
+        // Credenciales oficiales de acceso
         const ADMIN_EMAIL_VALIDO = "jhonnaperalta15gmail.com";
         const ADMIN_PASS_VALIDO = "Catalina1208";
 
@@ -260,4 +260,119 @@
             const errorDiv = document.getElementById("login-error");
 
             if (emailInput === ADMIN_EMAIL_VALIDO && passInput === ADMIN_PASS_VALIDO) {
-                document
+                document.getElementById("login-overlay").style.display = "none";
+                document.getElementById("panel-principal").style.display = "block";
+                sessionStorage.setItem("adminLogueado", "true");
+                cargarTodasLasReservas();
+            } else {
+                errorDiv.style.display = "block";
+            }
+        }
+
+        // Verificar sesión activa al recargar
+        window.addEventListener("DOMContentLoaded", () => {
+            if (sessionStorage.getItem("adminLogueado") === "true") {
+                document.getElementById("login-overlay").style.display = "none";
+                document.getElementById("panel-principal").style.display = "block";
+                cargarTodasLasReservas();
+            }
+        });
+
+        // Carga global de reservas desde Firestore
+        function cargarTodasLasReservas() {
+            const contenedorPendientes = document.getElementById("lista-pendientes");
+            const contenedorConfirmadas = document.getElementById("lista-confirmadas");
+            const contenedorRechazadas = document.getElementById("lista-rechazadas");
+
+            if (contenedorPendientes) contenedorPendientes.innerHTML = "<p style='color: #666;'>Cargando...</p>";
+            if (contenedorConfirmadas) contenedorConfirmadas.innerHTML = "<p style='color: #666;'>Cargando...</p>";
+            if (contenedorRechazadas) contenedorRechazadas.innerHTML = "<p style='color: #666;'>Cargando...</p>";
+
+            db.collection("reservas").get().then((querySnapshot) => {
+                contenedorPendientes.innerHTML = "";
+                contenedorConfirmadas.innerHTML = "";
+                contenedorRechazadas.innerHTML = "";
+
+                let hayPendientes = false;
+                let hayConfirmadas = false;
+                let hayRechazadas = false;
+
+                querySnapshot.forEach((doc) => {
+                    const reserva = doc.data();
+                    const idDoc = doc.id;
+                    const estado = reserva.estado ? reserva.estado.toLowerCase().trim() : "pendiente";
+
+                    if (estado === "pendiente") {
+                        hayPendientes = true;
+                        const tarjeta = document.createElement("div");
+                        tarjeta.className = "reserva-card";
+                        tarjeta.innerHTML = `
+                            <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
+                            <p>📞 ${reserva.telefono || 'Sin teléfono'}</p>
+                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horario || ''})</p>
+                            <p>🛠️ ${reserva.servicio || 'Limpieza'}</p>
+                            <div class="acciones-card">
+                                <button class="btn-aprobar" onclick="actualizarEstado('${idDoc}', 'confirmada')">Aceptar</button>
+                                <button class="btn-rechazar" onclick="actualizarEstado('${idDoc}', 'rechazada')">Rechazar</button>
+                            </div>
+                        `;
+                        contenedorPendientes.appendChild(tarjeta);
+                    } else if (estado === "confirmada") {
+                        hayConfirmadas = true;
+                        const tarjeta = document.createElement("div");
+                        tarjeta.className = "reserva-card";
+                        tarjeta.innerHTML = `
+                            <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
+                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horario || ''})</p>
+                            <p>🛠️ ${reserva.servicio || 'Limpieza'}</p>
+                            <button class="btn-eliminar-admin" onclick="eliminarReserva('${idDoc}')">Eliminar</button>
+                        `;
+                        contenedorConfirmadas.appendChild(tarjeta);
+                    } else if (estado === "rechazada") {
+                        hayRechazadas = true;
+                        const tarjeta = document.createElement("div");
+                        tarjeta.className = "reserva-card";
+                        tarjeta.innerHTML = `
+                            <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
+                            <p>📅 ${reserva.fecha || 'Sin fecha'}</p>
+                            <button class="btn-eliminar-admin" onclick="eliminarReserva('${idDoc}')">Eliminar</button>
+                        `;
+                        contenedorRechazadas.appendChild(tarjeta);
+                    }
+                });
+
+                if (!hayPendientes) contenedorPendientes.innerHTML = "<p style='color: #666; font-style: italic;'>No hay solicitudes pendientes.</p>";
+                if (!hayConfirmadas) contenedorConfirmadas.innerHTML = "<p style='color: #666; font-style: italic;'>No hay reservas confirmadas.</p>";
+                if (!hayRechazadas) contenedorRechazadas.innerHTML = "<p style='color: #666; font-style: italic;'>Sin registros rechazados.</p>";
+
+            }).catch((error) => {
+                console.error("Error al cargar reservas: ", error);
+                alert("Error al conectar con la base de datos.");
+            });
+        }
+
+        function actualizarEstado(idDoc, nuevoEstado) {
+            db.collection("reservas").doc(idDoc).update({ estado: nuevoEstado }).then(() => {
+                cargarTodasLasReservas();
+            }).catch((error) => {
+                alert("Error al actualizar: " + error.message);
+            });
+        }
+
+        function eliminarReserva(idDoc) {
+            if (confirm("¿Estás seguro de que deseas eliminar este registro?")) {
+                db.collection("reservas").doc(idDoc).delete().then(() => {
+                    cargarTodasLasReservas();
+                }).catch((error) => {
+                    alert("Error al eliminar: " + error.message);
+                });
+            }
+        }
+
+        function cerrarSesion() {
+            sessionStorage.removeItem("adminLogueado");
+            location.reload();
+        }
+    </script>
+</body>
+</html>
