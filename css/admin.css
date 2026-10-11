@@ -1,0 +1,32 @@
+﻿.admin-body { background-color: #0f172a; color: #f8fafc; }
+
+.login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.95); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+.login-card { background-color: #1e293b; padding: 40px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); width: 100%; max-width: 400px; text-align: center; border: 1px solid #334155; }
+.login-card h2 { color: #38bdf8; margin-bottom: 10px; font-size: 1.5rem; }
+.login-card p { color: #94a3b8; font-size: 0.9rem; margin-bottom: 25px; }
+.login-card input { background-color: #0f172a; border: 1px solid #334155; color: white; width: 100%; padding: 10px; border-radius: 6px; }
+.login-card input:focus { border-color: #38bdf8; outline: none; }
+
+.admin-header-bg { background-color: #1e293b; color: white; border-bottom: 1px solid #334155; }
+.admin-header-bg .nav-link { color: #38bdf8; }
+
+.admin-card { background-color: #1e293b; border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); border: 1px solid #334155; }
+.admin-card h3 { color: #38bdf8; margin-bottom: 15px; }
+
+.notifications-box { background-color: #0f172a; padding: 15px; border-radius: 6px; max-height: 150px; overflow-y: auto; border: 1px solid #334155; }
+.notif-item { background: #1e293b; padding: 8px 12px; margin-bottom: 8px; border-radius: 4px; border-left: 3px solid #10b981; font-size: 0.9rem; }
+
+.inline-form { display: flex; gap: 15px; align-items: flex-end; }
+.table-responsive { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; }
+.admin-table th, .admin-table td { padding: 12px; border-bottom: 1px solid #334155; }
+.admin-table th { background-color: #334155; color: #f8fafc; }
+
+.badge-status { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+.status-pendiente { background-color: #f59e0b; color: #000; }
+.status-confirmado { background-color: #10b981; color: #fff; }
+.status-completado { background-color: #3b82f6; color: #fff; }
+
+.btn-sm { padding: 6px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; border: none; }
+.btn-success { background-color: #10b981; color: white; }
+.btn-danger { background-color: #ef4444; color: white; }

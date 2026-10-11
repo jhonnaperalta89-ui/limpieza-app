@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Clean Corporation - La Serena</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --color-principal: #0F3B34;
+            --color-secundario: #8C7A5B;
+            --color-fondo: #FBF9F1;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(rgba(15, 59, 52, 0.5), rgba(15, 59, 52, 0.6)), 
+                        url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0; padding: 0; color: #2c2c2c;
+        }
+        header {
+            background: rgba(251, 249, 241, 0.95);
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--color-secundario);
+        }
+        header h1 { margin: 0; color: var(--color-principal); font-size: 2.2rem; }
+        main { max-width: 1000px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media(max-width: 768px) { main { grid-template-columns: 1fr; } }
+        .card {
+            background: var(--color-fondo);
+            padding: 30px;
+            border-radius: 12px;
+            border: 2px solid #D3C5B4;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .card h2 { color: var(--color-principal); margin-top: 0; }
+        .precio { font-size: 2rem; font-weight: bold; color: var(--color-principal); margin: 10px 0; }
+        .btn-reserva {
+            background: var(--color-principal); color: white; border: none; padding: 12px 25px;
+            font-size: 1rem; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 15px;
+        }
+        .btn-reserva:hover { background: #082622; }
+        
+        /* Modal */
+        #modalReserva {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: var(--color-fondo); padding: 25px; border-radius: 12px; width: 380px; max-width: 90%;
+            border: 2px solid var(--color-secundario); text-align: left; position: relative; max-height: 90vh; overflow-y: auto;
+        }
+        .modal-content input, .modal-content select, .modal-content textarea {
+            width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #D3C5B4; border-radius: 6px; box-sizing: border-box;
+        }
+        .cerrar-modal { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 1.2rem; color: #555; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Nexus Clean Corporation</h1>
+        <p>Servicios de Limpieza Profesional para Anfitriones en La Serena</p>
+    </header>
+
+    <main>
+        <div class="card">
+            <h2>Limpieza Entre Huéspedes</h2>
+            <div class="precio">$35.000</div>
+            <p>Servicio rápido, completo y eficiente entre reservas de Airbnb.</p>
+            <button class="btn-reserva" onclick="abrirModal('Limpieza Entre Huéspedes')">Reservar Ahora</button>
+        </div>
+        <div class="card">
+            <h2>Limpieza Profunda</h2>
+            <div class="precio">$70.000</div>
+            <p>Puesta a punto detallada y desinfección a fondo de espacios.</p>
+            <button class="btn-reserva" onclick="abrirModal('Limpieza Profunda')">Reservar Ahora</button>
+        </div>
+    </main>
+
+    <!-- Modal Formulario -->
+    <div id="modalReserva">
+        <div class="modal-content">
+            <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+            <h3 style="color: var(--color-principal); margin-top:0;">Solicitar Reserva</h3>
+            <form id="formReservaCliente">
+                <label>Nombre Completo</label>
+                <input type="text" id="nombre" required>
+                
+                <label>Teléfono</label>
+                <input type="tel" id="telefono" required>
+                
+                <label>Fecha</label>
+                <input type="date" id="fecha" required>
+                
+                <div style="display:flex; gap:10px;">
+                    <div style="flex:1;"><label>Inicio</label><input type="time" id="horaInicio" required></div>
+                    <div style="flex:1;"><label>Listo a las</label><input type="time" id="horaFin" required></div>
+                </div>
+                
+                <label>Dirección</label>
+                <input type="text" id="direccion" required>
+                
+                <label>Servicio</label>
+                <select id="tipoServicio">
+                    <option value="Limpieza Entre Huéspedes">Limpieza Entre Huéspedes</option>
+                    <option value="Limpieza Profunda">Limpieza Profunda</option>
+                </select>
+
+                <label>Observaciones</label>
+                <textarea id="observaciones" rows="2"></textarea>
+
+                <button type="submit" class="btn-reserva" style="width:100%;">Enviar Reserva</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
+            authDomain: "brillaclean-b9226.firebaseapp.com",
+            projectId: "brillaclean-b9226",
+            storageBucket: "brillaclean-b9226.firebasestorage.app",
+            messagingSenderId: "509006775314",
+            appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function abrirModal(servicio) {
+            document.getElementById('modalReserva').style.display = 'flex';
+            document.getElementById('tipoServicio').value = servicio;
+        }
+        function cerrarModal() {
+            document.getElementById('modalReserva').style.display = 'none';
+        }
+
+        document.getElementById('formReservaCliente').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nuevaOrden = {
+                nombre: document.getElementById('nombre').value,
+                telefono: document.getElementById('telefono').value,
+                fecha: document.getElementById('fecha').value,
+                horaInicio: document.getElementById('horaInicio').value,
+                horaFin: document.getElementById('horaFin').value,
+                direccion: document.getElementById('direccion').value,
+                tipoServicio: document.getElementById('tipoServicio').value,
+                observaciones: document.getElementById('observaciones').value || 'Ninguna',
+                estado: 'Pendiente',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                const docRef = await db.collection("ordenes").add(nuevaOrden);
+                alert("¡Reserva enviada con éxito! Tu código es: #" + docRef.id.substring(0,8).toUpperCase());
+                document.getElementById('formReservaCliente').reset();
+                cerrarModal();
+            } catch(err) {
+                alert("Error al enviar: " + err.message);
+            }
+        });
+    </script>
+</body>
+</html>

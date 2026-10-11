@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Panel Administrador - Nexus Clean</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --color-principal: #0F3B34;
+            --color-secundario: #8C7A5B;
+            --color-fondo: #FBF9F1;
+        }
+        body { font-family: 'Poppins', sans-serif; background: #0F3B34; margin: 0; padding: 20px; color: #333; }
+        .login-box, .admin-box {
+            max-width: 1100px; margin: 30px auto; background: var(--color-fondo); padding: 30px;
+            border-radius: 12px; border: 2px solid var(--color-secundario); box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .login-box { max-width: 400px; text-align: center; margin-top: 100px; }
+        .login-box input { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .btn { background: var(--color-principal); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        
+        #panelAdmin { display: none; }
+        .grid-admin { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px; }
+        @media(max-width: 900px) { .grid-admin { grid-template-columns: 1fr; } }
+        .columna { background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd; max-height: 550px; overflow-y: auto; }
+        .columna h3 { margin-top: 0; color: var(--color-principal); font-size: 1.1rem; border-bottom: 2px solid #eee; padding-bottom: 8px; }
+        .tarjeta-orden { background: #f9f9f9; border: 1px solid #e5e5e5; padding: 12px; border-radius: 6px; margin-bottom: 10px; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN -->
+    <div id="boxLogin" class="login-box">
+        <h2 style="color: var(--color-principal);">Acceso Admin</h2>
+        <form id="formLogin">
+            <input type="email" id="email" placeholder="Correo" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <button type="submit" class="btn" style="width:100%;">Entrar</button>
+        </form>
+        <p id="errorLogin" style="color: red; font-size: 0.85rem; margin-top: 10px;"></p>
+        <p><a href="index.html" style="color: var(--color-principal); font-size: 0.85rem;">Ir al sitio web</a></p>
+    </div>
+
+    <!-- PANEL PRINCIPAL -->
+    <div id="panelAdmin" class="admin-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-secundario); padding-bottom: 10px;">
+            <h2 style="color: var(--color-principal); margin:0;">Gestión de Órdenes</h2>
+            <div>
+                <a href="index.html" class="btn" style="text-decoration:none; padding:8px 15px; font-size:0.9rem;">Ver Web</a>
+                <button onclick="firebase.auth().signOut()" class="btn" style="background: #dc3545; padding:8px 15px; font-size:0.9rem;">Salir</button>
+            </div>
+        </div>
+
+        <div class="grid-admin">
+            <div class="columna">
+                <h3>⏳ Pendientes</h3>
+                <div id="listaPendientes">Cargando...</div>
+            </div>
+            <div class="columna">
+                <h3>✅ Confirmadas</h3>
+                <div id="listaConfirmados">Cargando...</div>
+            </div>
+            <div class="columna">
+                <h3>❌ Rechazadas</h3>
+                <div id="listaRechazados">Cargando...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
+            authDomain: "brillaclean-b9226.firebaseapp.com",
+            projectId: "brillaclean-b9226",
+            storageBucket: "brillaclean-b9226.firebasestorage.app",
+            messagingSenderId: "509006775314",
+            appId: "1:509006775314:web:1b92b6d31d110b5b4c84cb"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('boxLogin').style.display = 'none';
+                document.getElementById('panelAdmin').style.display = 'block';
+                cargarOrdenes();
+            } else {
+                document.getElementById('boxLogin').style.display = 'block';
+                document.getElementById('panelAdmin').style.display = 'none';
+            }
+        });
+
+        document.getElementById('formLogin').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            auth.signInWithEmailAndPassword(email, pass).catch(err => {
+                document.getElementById('errorLogin').innerText = "Credenciales incorrectas.";
+            });
+        });
+
+        async function cambiarEstado(id, nuevoEstado) {
+            let data = { estado: nuevoEstado };
+            if(nuevoEstado === 'Rechazado') data.fechaRechazo = firebase.firestore.Timestamp.now();
+            await db.collection("ordenes").doc(id).update(data);
+            cargarOrdenes();
+        }
+
+        async function eliminarOrden(id) {
+            if(confirm("¿Eliminar definitivamente?")) {
+                await db.collection("ordenes").doc(id).delete();
+                cargarOrdenes();
+            }
+        }
+
+        async function cargarOrdenes() {
+            const snap = await db.collection("ordenes").get();
+            let p = "", c = "", r = "";
+            let ahora = new Date().getTime();
+
+            snap.forEach(doc => {
+                let o = doc.data();
+                let id = doc.id;
+                let corto = id.substring(0,8).toUpperCase();
+
+                // Auto borrar rechazadas > 30 días
+                if(o.estado === 'Rechazado' && o.fechaRechazo) {
+                    if((ahora - o.fechaRechazo.toDate().getTime()) > (30*24*60*60*1000)) {
+                        db.collection("ordenes").doc(id).delete();
+                        return;
+                    }
+                }
+
+                let html = `<div class="tarjeta-orden">
+                    <b>#${corto}</b> - ${o.nombre}<br>
+                    📅 ${o.fecha} (${o.horaInicio}-${o.horaFin})<br>
+                    🛠 ${o.tipoServicio}<br>`;
+
+                if(o.estado === 'Pendiente') {
+                    html += `<button onclick="cambiarEstado('${id}', 'Confirmado')" class="btn" style="background:#28a745; padding:3px 8px; font-size:0.75rem; margin-top:5px;">Aceptar</button>
+                             <button onclick="cambiarEstado('${id}', 'Rechazado')" class="btn" style="background:#dc3545; padding:3px 8px; font-size:0.75rem; margin-top:5px;">Rechazar</button>`;
+                    p += html + `</div>`;
+                } else if(o.estado === 'Confirmado') {
+                    c += html + `</div>`;
+                } else if(o.estado === 'Rechazado') {
+                    html += `<button onclick="eliminarOrden('${id}')" class="btn" style="background:#6c757d; padding:2px 6px; font-size:0.7rem; margin-top:5px;">Borrar</button>`;
+                    r += html + `</div>`;
+                }
+            });
+
+            document.getElementById('listaPendientes').innerHTML = p || "Sin pendientes.";
+            document.getElementById('listaConfirmados').innerHTML = c || "Sin confirmadas.";
+            document.getElementById('listaRechazados').innerHTML = qHtml = r || "Sin rechazadas.";
+        }
+    </script>
+</body>
+</html>

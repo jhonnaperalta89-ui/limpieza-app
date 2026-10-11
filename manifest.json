@@ -1,0 +1,15 @@
+{
+  "name": "BrillaClean Admin",
+  "short_name": "BrillaClean",
+  "start_url": "/admin.html",
+  "display": "standalone",
+  "background_color": "#0F3B34",
+  "theme_color": "#0F3B34",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3076/3076753.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
