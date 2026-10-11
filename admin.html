@@ -12,7 +12,6 @@
             padding: 20px;
             color: #333;
         }
-        /* Pantalla de Login */
         #login-overlay {
             position: fixed;
             top: 0;
@@ -69,8 +68,6 @@
             margin-top: 10px;
             display: none;
         }
-
-        /* Panel Principal */
         .admin-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -78,7 +75,7 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: none; /* Oculto hasta iniciar sesión */
+            display: none;
         }
         .admin-header {
             display: flex;
@@ -207,50 +204,24 @@
             <!-- Sección: Pendientes por Aprobar -->
             <div class="panel-section">
                 <h3>⏳ Pendientes por Aprobar</h3>
-                <div id="lista-pendientes">
-                    <p style="color: #666; font-style: italic;">Cargando pendientes...</p>
-                </div>
+                <div id="lista-pendientes"></div>
             </div>
 
             <!-- Sección: Historial de Confirmadas -->
             <div class="panel-section">
                 <h3>✅ Historial de Confirmadas</h3>
-                <div id="lista-confirmadas">
-                    <p style="color: #666; font-style: italic;">Cargando confirmadas...</p>
-                </div>
+                <div id="lista-confirmadas"></div>
             </div>
 
             <!-- Sección: Historial Rechazadas -->
             <div class="panel-section">
                 <h3>❌ Historial Rechazadas</h3>
-                <div id="lista-rechazadas">
-                    <p style="color: #666; font-style: italic;">Sin registros rechazados.</p>
-                </div>
+                <div id="lista-rechazadas"></div>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDKs versión compatible -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    
     <script>
-        // Configuración de Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyD... (tu apikey real)", 
-            authDomain: "limpieza-app-xyz.firebaseapp.com",
-            projectId: "limpieza-app-xyz",
-            storageBucket: "limpieza-app-xyz.appspot.com",
-            messagingSenderId: "xxxx",
-            appId: "xxxx"
-        };
-        
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.firestore();
-
-        // Credenciales solicitadas
         const ADMIN_EMAIL_VALIDO = "jhonnaperalta15gmail.com";
         const ADMIN_PASS_VALIDO = "Catalina1208";
 
@@ -263,110 +234,90 @@
                 document.getElementById("login-overlay").style.display = "none";
                 document.getElementById("panel-principal").style.display = "block";
                 sessionStorage.setItem("adminLogueado", "true");
-                cargarTodasLasReservas();
+                cargarReservasLocal();
             } else {
                 errorDiv.style.display = "block";
             }
         }
 
-        // Verificar sesión activa al recargar
         window.addEventListener("DOMContentLoaded", () => {
             if (sessionStorage.getItem("adminLogueado") === "true") {
                 document.getElementById("login-overlay").style.display = "none";
                 document.getElementById("panel-principal").style.display = "block";
-                cargarTodasLasReservas();
+                cargarReservasLocal();
             }
         });
 
-        // Carga global de reservas clasificadas por JavaScript (Sin depender de índices de Firestore)
-        function cargarTodasLasReservas() {
+        function cargarReservasLocal() {
             const contenedorPendientes = document.getElementById("lista-pendientes");
             const contenedorConfirmadas = document.getElementById("lista-confirmadas");
             const contenedorRechazadas = document.getElementById("lista-rechazadas");
 
-            if (contenedorPendientes) contenedorPendientes.innerHTML = "<p style='color: #666;'>Cargando...</p>";
-            if (contenedorConfirmadas) contenedorConfirmadas.innerHTML = "<p style='color: #666;'>Cargando...</p>";
-            if (contenedorRechazadas) contenedorRechazadas.innerHTML = "<p style='color: #666;'>Cargando...</p>";
+            contenedorPendientes.innerHTML = "";
+            contenedorConfirmadas.innerHTML = "";
+            contenedorRechazadas.innerHTML = "";
 
-            db.collection("reservas").get().then((querySnapshot) => {
-                contenedorPendientes.innerHTML = "";
-                contenedorConfirmadas.innerHTML = "";
-                contenedorRechazadas.innerHTML = "";
+            let reservas = JSON.parse(localStorage.getItem("nexus_reservas")) || [];
 
-                let hayPendientes = false;
-                let hayConfirmadas = false;
-                let hayRechazadas = false;
+            let hayPendientes = false;
+            let hayConfirmadas = false;
+            let hayRechazadas = false;
 
-                querySnapshot.forEach((doc) => {
-                    const reserva = doc.data();
-                    const idDoc = doc.id;
-                    const estado = reserva.estado ? reserva.estado.toLowerCase().trim() : "pendiente";
+            reservas.forEach((reserva) => {
+                const tarjeta = document.createElement("div");
+                tarjeta.className = "reserva-card";
 
-                    if (estado === "pendiente") {
-                        hayPendientes = true;
-                        const tarjeta = document.createElement("div");
-                        tarjeta.className = "reserva-card";
-                        tarjeta.innerHTML = `
-                            <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
-                            <p>📞 ${reserva.telefono || 'Sin teléfono'}</p>
-                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horario || ''})</p>
-                            <p>🛠️ ${reserva.servicio || 'Limpieza'}</p>
-                            <div class="acciones-card">
-                                <button class="btn-aprobar" onclick="actualizarEstado('${idDoc}', 'confirmada')">Aceptar</button>
-                                <button class="btn-rechazar" onclick="actualizarEstado('${idDoc}', 'rechazada')">Rechazar</button>
-                            </div>
-                        `;
-                        contenedorPendientes.appendChild(tarjeta);
-                    } else if (estado === "confirmada") {
-                        hayConfirmadas = true;
-                        const tarjeta = document.createElement("div");
-                        tarjeta.className = "reserva-card";
-                        tarjeta.innerHTML = `
-                            <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
-                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horario || ''})</p>
-                            <p>🛠️ ${reserva.servicio || 'Limpieza'}</p>
-                            <button class="btn-eliminar-admin" onclick="eliminarReserva('${idDoc}')">Eliminar</button>
-                        `;
-                        contenedorConfirmadas.appendChild(tarjeta);
-                    } else if (estado === "rechazada") {
-                        hayRechazadas = true;
-                        const tarjeta = document.createElement("div");
-                        tarjeta.className = "reserva-card";
-                        tarjeta.innerHTML = `
-                            <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
-                            <p>📅 ${reserva.fecha || 'Sin fecha'}</p>
-                            <button class="btn-eliminar-admin" onclick="eliminarReserva('${idDoc}')">Eliminar</button>
-                        `;
-                        contenedorRechazadas.appendChild(tarjeta);
-                    }
-                });
-
-                if (!hayPendientes) contenedorPendientes.innerHTML = "<p style='color: #666; font-style: italic;'>No hay solicitudes pendientes.</p>";
-                if (!hayConfirmadas) contenedorConfirmadas.innerHTML = "<p style='color: #666; font-style: italic;'>No hay reservas confirmadas.</p>";
-                if (!hayRechazadas) contenedorRechazadas.innerHTML = "<p style='color: #666; font-style: italic;'>Sin registros rechazados.</p>";
-
-            }).catch((error) => {
-                console.error("Error al cargar reservas: ", error);
-                alert("Error al cargar los datos de la base de datos.");
+                if (reserva.estado === "pendiente") {
+                    hayPendientes = true;
+                    tarjeta.innerHTML = `
+                        <p><b>#${reserva.codigo}</b> - ${reserva.nombre}</p>
+                        <p>📞 ${reserva.telefono}</p>
+                        <p>📅 ${reserva.fecha} (${reserva.horario})</p>
+                        <p>🛠️ ${reserva.servicio}</p>
+                        <div class="acciones-card">
+                            <button class="btn-aprobar" onclick="cambiarEstado('${reserva.id}', 'confirmada')">Aceptar</button>
+                            <button class="btn-rechazar" onclick="cambiarEstado('${reserva.id}', 'rechazada')">Rechazar</button>
+                        </div>
+                    `;
+                    contenedorPendientes.appendChild(tarjeta);
+                } else if (reserva.estado === "confirmada") {
+                    hayConfirmadas = true;
+                    tarjeta.innerHTML = `
+                        <p><b>#${reserva.codigo}</b> - ${reserva.nombre}</p>
+                        <p>📅 ${reserva.fecha} (${reserva.horario})</p>
+                        <p>🛠️ ${reserva.servicio}</p>
+                        <button class="btn-eliminar-admin" onclick="eliminarReserva('${reserva.id}')">Eliminar</button>
+                    `;
+                    contenedorConfirmadas.appendChild(tarjeta);
+                } else if (reserva.estado === "rechazada") {
+                    hayRechazadas = true;
+                    tarjeta.innerHTML = `
+                        <p><b>#${reserva.codigo}</b> - ${reserva.nombre}</p>
+                        <p>📅 ${reserva.fecha}</p>
+                        <button class="btn-eliminar-admin" onclick="eliminarReserva('${reserva.id}')">Eliminar</button>
+                    `;
+                    contenedorRechazadas.appendChild(tarjeta);
+                }
             });
+
+            if (!hayPendientes) contenedorPendientes.innerHTML = "<p style='color: #666; font-style: italic;'>No hay solicitudes pendientes.</p>";
+            if (!hayConfirmadas) contenedorConfirmadas.innerHTML = "<p style='color: #666; font-style: italic;'>No hay reservas confirmadas.</p>";
+            if (!hayRechazadas) contenedorRechazadas.innerHTML = "<p style='color: #666; font-style: italic;'>Sin registros rechazados.</p>";
         }
 
-        // Funciones de acción
-        function actualizarEstado(idDoc, nuevoEstado) {
-            db.collection("reservas").doc(idDoc).update({ estado: nuevoEstado }).then(() => {
-                cargarTodasLasReservas();
-            }).catch((error) => {
-                alert("Error al actualizar: " + error.message);
-            });
+        function cambiarEstado(id, nuevoEstado) {
+            let reservas = JSON.parse(localStorage.getItem("nexus_reservas")) || [];
+            reservas = reservas.map(r => r.id === id ? {...r, estado: nuevoEstado} : r);
+            localStorage.setItem("nexus_reservas", JSON.stringify(reservas));
+            cargarReservasLocal();
         }
 
-        function eliminarReserva(idDoc) {
+        function eliminarReserva(id) {
             if (confirm("¿Estás seguro de que deseas eliminar este registro?")) {
-                db.collection("reservas").doc(idDoc).delete().then(() => {
-                    cargarTodasLasReservas();
-                }).catch((error) => {
-                    alert("Error al eliminar: " + error.message);
-                });
+                let reservas = JSON.parse(localStorage.getItem("nexus_reservas")) || [];
+                reservas = reservas.filter(r => r.id !== id);
+                localStorage.setItem("nexus_reservas", JSON.stringify(reservas));
+                cargarReservasLocal();
             }
         }
 
