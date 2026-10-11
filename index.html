@@ -160,7 +160,26 @@
         <a href="admin.html">Acceso Administrador</a>
     </div>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
     <script>
+        // Configuración de Firebase (asegúrate de mantener aquí tu configuración original)
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY", 
+            authDomain: "tu-proyecto.firebaseapp.com",
+            projectId: "tu-proyecto",
+            storageBucket: "tu-proyecto.appspot.com",
+            messagingSenderId: "xxxx",
+            appId: "xxxx"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
         let ultimoCodigoGenerado = "";
 
         function registrarReserva(e) {
@@ -172,26 +191,26 @@
             const horario = document.getElementById("horario").value.trim();
 
             const codigoUnico = "NX-" + Math.floor(100000 + Math.random() * 900000);
-            const nuevaReserva = {
-                id: 'reserva_' + Date.now(),
+
+            // Guardar en Firestore
+            db.collection("reservas").add({
+                nombre: nombre,
+                telefono: telefono,
+                servicio: servicio,
+                fecha: fecha,
+                horario: horario,
                 codigo: codigoUnico,
-                nombre,
-                telefono,
-                servicio,
-                fecha,
-                horario,
-                estado: "pendiente"
-            };
-
-            let reservas = JSON.parse(localStorage.getItem("nexus_reservas")) || [];
-            reservas.push(nuevaReserva);
-            localStorage.setItem("nexus_reservas", JSON.stringify(reservas));
-
-            ultimoCodigoGenerado = codigoUnico;
-            document.getElementById("texto-codigo").innerText = codigoUnico;
-            document.getElementById("box-codigo").style.display = "block";
-            document.getElementById("form-reserva").reset();
-            alert("¡Reserva registrada con éxito!");
+                estado: "pendiente",
+                creado: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                ultimoCodigoGenerado = codigoUnico;
+                document.getElementById("texto-codigo").innerText = codigoUnico;
+                document.getElementById("box-codigo").style.display = "block";
+                document.getElementById("form-reserva").reset();
+                alert("¡Reserva registrada con éxito!");
+            }).catch((error) => {
+                alert("Error al registrar la reserva: " + error.message);
+            });
         }
 
         function copiarCodigo() {
@@ -215,34 +234,39 @@
             contenedorResultado.style.display = "block";
             contenedorResultado.innerHTML = "Buscando estado...";
 
-            let reservas = JSON.parse(localStorage.getItem("nexus_reservas")) || [];
-            const reservaEncontrada = reservas.find(r => r.codigo === codigoBuscado);
+            db.collection("reservas").where("codigo", "==", codigoBuscado).get().then((querySnapshot) => {
+                if (querySnapshot.empty) {
+                    contenedorResultado.innerHTML = "❌ No se encontró ninguna reserva con ese código.";
+                    return;
+                }
 
-            if (!reservaEncontrada) {
-                contenedorResultado.innerHTML = "❌ No se encontró ninguna reserva con ese código.";
-                return;
-            }
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    let estadoTexto = "";
+                    let colorEstado = "";
 
-            let estadoTexto = "";
-            let colorEstado = "";
+                    if (data.estado === "pendiente") {
+                        estadoTexto = "⏳ Pendiente de revisión por el administrador";
+                        colorEstado = "#d9534f";
+                    } else if (data.estado === "confirmada") {
+                        estadoTexto = "✅ ¡Aceptada y Confirmada!";
+                        colorEstado = "#28a745";
+                    } else if (data.estado === "rechazada") {
+                        estadoTexto = "❌ Rechazada";
+                        colorEstado = "#6c757d";
+                    }
 
-            if (reservaEncontrada.estado === "pendiente") {
-                estadoTexto = "⏳ Pendiente de revisión por el administrador";
-                colorEstado = "#d9534f";
-            } else if (reservaEncontrada.estado === "confirmada") {
-                estadoTexto = "✅ ¡Aceptada y Confirmada!";
-                colorEstado = "#28a745";
-            } else if (reservaEncontrada.estado === "rechazada") {
-                estadoTexto = "❌ Rechazada";
-                colorEstado = "#6c757d";
-            }
-
-            contenedorResultado.innerHTML = `
-                <b>Cliente:</b> ${reservaEncontrada.nombre}<br>
-                <b>Servicio:</b> ${reservaEncontrada.servicio}<br>
-                <b>Fecha:</b> ${reservaEncontrada.fecha} (${reservaEncontrada.horario})<br>
-                <b>Estado Actual:</b> <span style="color: ${colorEstado}; font-weight: bold;">${estadoTexto}</span>
-            `;
+                    contenedorResultado.innerHTML = `
+                        <b>Cliente:</b> ${data.nombre}<br>
+                        <b>Servicio:</b> ${data.servicio}<br>
+                        <b>Fecha:</b> ${data.fecha} (${data.horario})<br>
+                        <b>Estado Actual:</b> <span style="color: ${colorEstado}; font-weight: bold;">${estadoTexto}</span>
+                    `;
+                });
+            }).catch((error) => {
+                contenedorResultado.innerHTML = "❌ Error al consultar el estado.";
+                console.error(error);
+            });
         }
     </script>
 </body>
