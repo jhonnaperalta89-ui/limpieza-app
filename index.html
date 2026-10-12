@@ -354,29 +354,9 @@
             font-size: 1rem;
             margin-top: 10px;
         }
-
-        .admin-link-top {
-            text-align: right;
-            max-width: 1200px;
-            margin: 15px auto 0 auto;
-            padding: 0 20px;
-        }
-        .admin-link-top a {
-            color: var(--color-principal);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            background: #e8e5df;
-            padding: 6px 15px;
-            border-radius: 6px;
-        }
     </style>
 </head>
 <body>
-
-    <div class="admin-link-top">
-        <a href="admin.html"><i class="fas fa-lock"></i> Acceso Administrador</a>
-    </div>
 
     <header>
         <div class="header-content">
@@ -606,7 +586,6 @@
                     return;
                 }
 
-                // Sincronizado para usar la colección "reservas" que lee el panel de administración
                 try {
                     const snapshot = await db.collection("reservas").where("fecha", "==", fecha).get();
                     let haySolapamiento = false;
