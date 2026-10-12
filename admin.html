@@ -12,6 +12,7 @@
             padding: 20px;
             color: #333;
         }
+        /* Pantalla de Login */
         #login-overlay {
             position: fixed;
             top: 0;
@@ -68,6 +69,8 @@
             margin-top: 10px;
             display: none;
         }
+
+        /* Panel Principal */
         .admin-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -75,7 +78,7 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: none;
+            display: none; /* Oculto hasta iniciar sesión */
         }
         .admin-header {
             display: flex;
@@ -227,7 +230,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs Compat -->
+    <!-- Firebase Compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -248,6 +251,7 @@
         }
         const db = firebase.firestore();
 
+        // Credenciales oficiales de acceso
         const ADMIN_EMAIL_VALIDO = "jhonnaperalta15gmail.com";
         const ADMIN_PASS_VALIDO = "Catalina1208";
 
@@ -266,6 +270,7 @@
             }
         }
 
+        // Verificar sesión activa al recargar
         window.addEventListener("DOMContentLoaded", () => {
             if (sessionStorage.getItem("adminLogueado") === "true") {
                 document.getElementById("login-overlay").style.display = "none";
@@ -274,7 +279,7 @@
             }
         });
 
-        // Carga de la colección "reservas" para que coincida con el formulario
+        // Carga global de reservas desde la colección "reservas"
         function cargarTodasLasReservas() {
             const contenedorPendientes = document.getElementById("lista-pendientes");
             const contenedorConfirmadas = document.getElementById("lista-confirmadas");
@@ -299,14 +304,14 @@
                     const idCorto = idDoc.substring(0, 8).toUpperCase();
                     const estado = reserva.estado ? reserva.estado.toLowerCase().trim() : "pendiente";
 
-                    if (estado === "pendiente" || estado === "pendiente") {
+                    if (estado === "pendiente") {
                         hayPendientes = true;
                         const tarjeta = document.createElement("div");
                         tarjeta.className = "reserva-card";
                         tarjeta.innerHTML = `
                             <p><b>#${idCorto}</b> - ${reserva.nombre || 'Cliente'}</p>
                             <p>📞 ${reserva.telefono || 'Sin teléfono'}</p>
-                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horaInicio || ''} - ${reserva.horaFin || ''})</p>
+                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horaInicio || ''} a ${reserva.horaFin || ''})</p>
                             <p>🛠️ ${reserva.tipoServicio || 'Limpieza'}</p>
                             <p>📍 ${reserva.direccion || 'Sin dirección'}</p>
                             <div class="acciones-card">
@@ -321,7 +326,7 @@
                         tarjeta.className = "reserva-card";
                         tarjeta.innerHTML = `
                             <p><b>#${idCorto}</b> - ${reserva.nombre || 'Cliente'}</p>
-                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horaInicio || ''} - ${reserva.horaFin || ''})</p>
+                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horaInicio || ''} a ${reserva.horaFin || ''})</p>
                             <p>🛠️ ${reserva.tipoServicio || 'Limpieza'}</p>
                             <button class="btn-eliminar-admin" onclick="eliminarReserva('${idDoc}')">Eliminar</button>
                         `;

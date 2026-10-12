@@ -385,7 +385,7 @@
                     <i class="fas fa-home"></i>
                 </div>
                 <div>
-                    <h1>BRILLACLEAN</h1>
+                    <h1>SERVICIOS DE LIMPIEZA</h1>
                     <p>Especial para Corredores de Propiedades y Arriendos de Airbnb</p>
                 </div>
             </div>
@@ -606,6 +606,7 @@
                     return;
                 }
 
+                // Sincronizado para usar la colección "reservas" que lee el panel de administración
                 try {
                     const snapshot = await db.collection("reservas").where("fecha", "==", fecha).get();
                     let haySolapamiento = false;
