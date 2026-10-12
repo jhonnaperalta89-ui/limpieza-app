@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Clean Corporation | Panel de Administración</title>
+    <title>BrillaClean | Panel de Administración</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -18,7 +18,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(27, 67, 50, 0.95);
+            background-color: rgba(15, 59, 52, 0.95);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -35,7 +35,7 @@
         }
         .login-card h2 {
             margin-top: 0;
-            color: #1b4332;
+            color: #0F3B34;
             margin-bottom: 20px;
         }
         .login-card input {
@@ -50,7 +50,7 @@
         .login-card button {
             width: 100%;
             padding: 12px;
-            background-color: #1b4332;
+            background-color: #0F3B34;
             color: white;
             border: none;
             border-radius: 6px;
@@ -60,7 +60,7 @@
             font-size: 16px;
         }
         .login-card button:hover {
-            background-color: #2d6a4f;
+            background-color: #1a5c51;
         }
         .error-msg {
             color: #d9534f;
@@ -88,7 +88,7 @@
         .admin-header h1 {
             margin: 0;
             font-size: 24px;
-            color: #1b4332;
+            color: #0F3B34;
         }
         .admin-actions button {
             padding: 8px 16px;
@@ -99,7 +99,7 @@
             margin-left: 10px;
         }
         .btn-web {
-            background-color: #1b4332;
+            background-color: #0F3B34;
             color: white;
         }
         .btn-logout {
@@ -193,7 +193,7 @@
     <!-- PANEL DE ADMINISTRACIÓN -->
     <div class="admin-container" id="panel-principal">
         <div class="admin-header">
-            <h1>Panel de Administración - Nexus Clean Corporation</h1>
+            <h1>Panel de Administración - BrillaClean</h1>
             <div class="admin-actions">
                 <button class="btn-web" onclick="window.location.href='index.html'">Ver Web</button>
                 <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
@@ -228,11 +228,11 @@
     </div>
 
     <!-- Firebase SDKs Compat -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
     
     <script>
-        // Configuración de BrillaClean
         const firebaseConfig = {
             apiKey: "AIzaSyBUPG9N4UPOrLaOiTYLbZ2UB6T5mUbxkLw",
             authDomain: "brillaclean-b9226.firebaseapp.com",
@@ -274,6 +274,7 @@
             }
         });
 
+        // Carga de la colección "reservas" para que coincida con el formulario
         function cargarTodasLasReservas() {
             const contenedorPendientes = document.getElementById("lista-pendientes");
             const contenedorConfirmadas = document.getElementById("lista-confirmadas");
@@ -295,40 +296,42 @@
                 querySnapshot.forEach((doc) => {
                     const reserva = doc.data();
                     const idDoc = doc.id;
+                    const idCorto = idDoc.substring(0, 8).toUpperCase();
                     const estado = reserva.estado ? reserva.estado.toLowerCase().trim() : "pendiente";
 
-                    if (estado === "pendiente") {
+                    if (estado === "pendiente" || estado === "pendiente") {
                         hayPendientes = true;
                         const tarjeta = document.createElement("div");
                         tarjeta.className = "reserva-card";
                         tarjeta.innerHTML = `
-                            <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
+                            <p><b>#${idCorto}</b> - ${reserva.nombre || 'Cliente'}</p>
                             <p>📞 ${reserva.telefono || 'Sin teléfono'}</p>
-                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horario || ''})</p>
-                            <p>🛠️ ${reserva.servicio || 'Limpieza'}</p>
+                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horaInicio || ''} - ${reserva.horaFin || ''})</p>
+                            <p>🛠️ ${reserva.tipoServicio || 'Limpieza'}</p>
+                            <p>📍 ${reserva.direccion || 'Sin dirección'}</p>
                             <div class="acciones-card">
-                                <button class="btn-aprobar" onclick="actualizarEstado('${idDoc}', 'confirmada')">Aceptar</button>
-                                <button class="btn-rechazar" onclick="actualizarEstado('${idDoc}', 'rechazada')">Rechazar</button>
+                                <button class="btn-aprobar" onclick="actualizarEstado('${idDoc}', 'Confirmado')">Aceptar</button>
+                                <button class="btn-rechazar" onclick="actualizarEstado('${idDoc}', 'Rechazado')">Rechazar</button>
                             </div>
                         `;
                         contenedorPendientes.appendChild(tarjeta);
-                    } else if (estado === "confirmada") {
+                    } else if (estado === "confirmado") {
                         hayConfirmadas = true;
                         const tarjeta = document.createElement("div");
                         tarjeta.className = "reserva-card";
                         tarjeta.innerHTML = `
-                            <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
-                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horario || ''})</p>
-                            <p>🛠️ ${reserva.servicio || 'Limpieza'}</p>
+                            <p><b>#${idCorto}</b> - ${reserva.nombre || 'Cliente'}</p>
+                            <p>📅 ${reserva.fecha || 'Sin fecha'} (${reserva.horaInicio || ''} - ${reserva.horaFin || ''})</p>
+                            <p>🛠️ ${reserva.tipoServicio || 'Limpieza'}</p>
                             <button class="btn-eliminar-admin" onclick="eliminarReserva('${idDoc}')">Eliminar</button>
                         `;
                         contenedorConfirmadas.appendChild(tarjeta);
-                    } else if (estado === "rechazada") {
+                    } else if (estado === "rechazado") {
                         hayRechazadas = true;
                         const tarjeta = document.createElement("div");
                         tarjeta.className = "reserva-card";
                         tarjeta.innerHTML = `
-                            <p><b>#${reserva.codigo || idDoc.substring(0, 6)}</b> - ${reserva.nombre || 'Cliente'}</p>
+                            <p><b>#${idCorto}</b> - ${reserva.nombre || 'Cliente'}</p>
                             <p>📅 ${reserva.fecha || 'Sin fecha'}</p>
                             <button class="btn-eliminar-admin" onclick="eliminarReserva('${idDoc}')">Eliminar</button>
                         `;
