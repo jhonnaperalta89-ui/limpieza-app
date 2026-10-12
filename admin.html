@@ -78,7 +78,7 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: none; /* Oculto hasta iniciar sesión */
+            display: none; /* Oculto hasta iniciar sesión de forma segura */
         }
         .admin-header {
             display: flex;
@@ -182,7 +182,7 @@
 </head>
 <body>
 
-    <!-- CAPA DE ACCESO (LOGIN) -->
+    <!-- CAPA DE ACCESO (LOGIN SEGURO CON FIREBASE AUTH) -->
     <div id="login-overlay">
         <div class="login-card">
             <h2>Acceso Administrador</h2>
@@ -251,33 +251,41 @@
         }
         const db = firebase.firestore();
 
-        // Credenciales oficiales de acceso
-        const ADMIN_EMAIL_VALIDO = "jhonnaperalta15gmail.com";
-        const ADMIN_PASS_VALIDO = "Catalina1208";
-
+        // Función para iniciar sesión de forma segura con Firebase Auth
         function intentarLogin() {
             const emailInput = document.getElementById("login-email").value.trim();
             const passInput = document.getElementById("login-pass").value.trim();
             const errorDiv = document.getElementById("login-error");
 
-            if (emailInput === ADMIN_EMAIL_VALIDO && passInput === ADMIN_PASS_VALIDO) {
-                document.getElementById("login-overlay").style.display = "none";
-                document.getElementById("panel-principal").style.display = "block";
-                sessionStorage.setItem("adminLogueado", "true");
-                cargarTodasLasReservas();
-            } else {
-                errorDiv.style.display = "block";
-            }
+            firebase.auth().signInWithEmailAndPassword(emailInput, passInput)
+                .then((userCredential) => {
+                    // Inicio de sesión exitoso
+                    document.getElementById("login-overlay").style.display = "none";
+                    document.getElementById("panel-principal").style.display = "block";
+                    cargarTodasLasReservas();
+                })
+                .catch((error) => {
+                    // Error de autenticación
+                    console.error(error);
+                    errorDiv.style.display = "block";
+                });
         }
 
-        // Verificar sesión activa al recargar
-        window.addEventListener("DOMContentLoaded", () => {
-            if (sessionStorage.getItem("adminLogueado") === "true") {
+        // Mantener la sesión activa automáticamente de forma segura
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
                 document.getElementById("login-overlay").style.display = "none";
                 document.getElementById("panel-principal").style.display = "block";
                 cargarTodasLasReservas();
             }
         });
+
+        // Función para cerrar sesión con Firebase Auth
+        function cerrarSesion() {
+            firebase.auth().signOut().then(() => {
+                location.reload();
+            });
+        }
 
         // Carga global de reservas desde la colección "reservas"
         function cargarTodasLasReservas() {
@@ -370,11 +378,6 @@
                     alert("Error al eliminar: " + error.message);
                 });
             }
-        }
-
-        function cerrarSesion() {
-            sessionStorage.removeItem("adminLogueado");
-            location.reload();
         }
     </script>
 </body>
