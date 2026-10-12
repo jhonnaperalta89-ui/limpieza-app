@@ -607,7 +607,7 @@
                 }
 
                 try {
-                    const snapshot = await db.collection("ordenes").where("fecha", "==", fecha).get();
+                    const snapshot = await db.collection("reservas").where("fecha", "==", fecha).get();
                     let haySolapamiento = false;
 
                     snapshot.forEach((doc) => {
@@ -646,7 +646,7 @@
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                db.collection("ordenes").add(nuevaOrden)
+                db.collection("reservas").add(nuevaOrden)
                     .then((docRef) => {
                         let idCorto = docRef.id.substring(0, 8).toUpperCase();
                         
@@ -764,7 +764,7 @@
             resultadoDiv.innerHTML = "Buscando orden...";
 
             try {
-                const snapshot = await db.collection("ordenes").get();
+                const snapshot = await db.collection("reservas").get();
                 let encontrada = false;
 
                 snapshot.forEach((doc) => {
