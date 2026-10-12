@@ -183,6 +183,20 @@
 
         let ultimoCodigoGenerado = "";
 
+        // Credenciales de Telegram (si las usabas previamente, puedes mantenerlas activas)
+        const TELEGRAM_BOT_TOKEN = "TU_BOT_TOKEN"; 
+        const TELEGRAM_CHAT_ID = "TU_CHAT_ID";
+
+        function enviarNotificacionTelegram(mensaje) {
+            if (TELEGRAM_BOT_TOKEN === "TU_BOT_TOKEN") return; // Evita error si no está configurado
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: mensaje, parse_mode: 'Markdown' })
+            }).catch(err => console.error("Error Telegram:", err));
+        }
+
         function registrarReserva(e) {
             e.preventDefault();
             const nombre = document.getElementById("nombre").value.trim();
@@ -208,6 +222,10 @@
                 document.getElementById("texto-codigo").innerText = codigoUnico;
                 document.getElementById("box-codigo").style.display = "block";
                 document.getElementById("form-reserva").reset();
+
+                // Enviar aviso a Telegram
+                enviarNotificacionTelegram(`🔔 *Nueva Reserva Recibida*\n\n👤 *Cliente:* ${nombre}\n📞 *Teléfono:* ${telefono}\n🛠️ *Servicio:* ${servicio}\n📅 *Fecha:* ${fecha} (${horario})\n🔑 *Código:* \`${codigoUnico}\``);
+
                 alert("¡Reserva registrada con éxito en Firebase!");
             }).catch((error) => {
                 alert("Error al registrar la reserva: " + error.message);
